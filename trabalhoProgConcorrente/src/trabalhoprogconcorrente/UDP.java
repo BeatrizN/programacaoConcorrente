@@ -30,8 +30,8 @@ public class UDP extends SwingWorker<Void, String> {
     protected Void doInBackground() throws Exception {
         String mensagem;
         while (true) {
+            DatagramPacket pacote = new DatagramPacket(this.buffer, this.buffer.length);
             try {
-                DatagramPacket pacote = new DatagramPacket(this.buffer, this.buffer.length);
                 this.socket.receive(pacote);
                 mensagem = new String(pacote.getData()).trim();
                 
@@ -40,15 +40,18 @@ public class UDP extends SwingWorker<Void, String> {
                 }
                 
                 if (mensagem.length() < 5) {
-                    //Mensagem inválida (curta);
+                    mainJogo.exibirMensagens(mainJogo.mensagemIN, pacote.getAddress().
+                            getHostAddress(), "Mensagem Inválida: " + mensagem);
                     continue;
                 }
                 
-                //Inserir aqui função para exibir mensagem;
+                mainJogo.exibirMensagens(mainJogo.mensagemIN, pacote.getAddress().
+                            getHostAddress(), mensagem);
                 
                 int tamanhoMensagem = Integer.parseInt(mensagem.substring(2, 5));
                 if (tamanhoMensagem != mensagem.length()) {
-                    //Tamanho da mensagem invalido);
+                    mainJogo.exibirMensagens(mainJogo.mensagemIN, pacote.getAddress().
+                            getHostAddress(), "Mensagem Inválida: " + mensagem);
                     continue;
                 }
 
@@ -77,11 +80,13 @@ public class UDP extends SwingWorker<Void, String> {
                             //
                             break;   
                     default:
-                            // Mensagem inválida.
+                        mainJogo.exibirMensagens(mainJogo.mensagemIN, pacote.getAddress().
+                            getHostAddress(), "Mensagem Inválida: " + mensagem);
                 }
 
             } catch (IOException ex){
-                throw new UnsupportedOperationException("Not supported yet.");
+                mainJogo.exibirMensagens(mainJogo.mensagemIN, pacote.getAddress().
+                            getHostAddress(), ex.getMessage());
             } 
         }
     }
@@ -90,7 +95,7 @@ public class UDP extends SwingWorker<Void, String> {
         if (socket.isConnected()) {
             socket.disconnect();
         }
-        
+         
         socket.close();
     }
 }

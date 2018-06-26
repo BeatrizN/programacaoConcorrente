@@ -86,7 +86,7 @@ public class CnxTCP extends SwingWorker<Boolean, String> {
                     switch (tamanhoTotalMsg) {
                         case 7:
                             if (posicao == 1 || posicao == 2) 
-                                mainTabuleiro.JogadorQueComecaJogando(posicao);
+                                mainTabuleiro.JogadorComecaJogando(posicao);
                             break;
                     
                         case 8:
