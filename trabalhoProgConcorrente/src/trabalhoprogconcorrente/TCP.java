@@ -30,11 +30,12 @@ public class TCP extends SwingWorker<Boolean, String> {
                 if (conexao.getInetAddress().equals(enderecoIpRemoto) == true) {
                     CnxTCP criaConexao = new CnxTCP(mainJogo, conexao); 
                     criaConexao.execute();
-                    // Apresentar mensagem de conexao realizada com sucesso
+                    // Apresentar mensagem de conexao realizada com sucesso (caixa no mainJogo).
                     return true; 
                 } else {
                    conexao.close();                    
-                    // Mensagem de erro na tentativa de conexao
+                    mainJogo.exibirMensagens(mainJogo.mensagemIN, conexao.getRemoteSocketAddress().
+                            toString(), "Tentativa de conexão inválida.");
                 }
             }
         }catch (IOException ex) {
