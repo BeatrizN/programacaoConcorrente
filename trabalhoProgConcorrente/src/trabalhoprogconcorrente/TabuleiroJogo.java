@@ -105,7 +105,7 @@ public class TabuleiroJogo extends javax.swing.JFrame {
         initComponents();
     }
     
-    private void iniciarSessaoJogo() throws IOException {
+    public void iniciarSessaoJogo() throws IOException {
         
         if (timeoutEsperandoJogadorRemoto.isRunning()) {
             timeoutEsperandoJogadorRemoto.stop();
@@ -141,7 +141,7 @@ public class TabuleiroJogo extends javax.swing.JFrame {
         
     }
     
-    private void zerarPlacar() {
+    public void zerarPlacar() {
         Color corTabuleiro;
         String nomeRemoto;
         
@@ -188,11 +188,54 @@ public class TabuleiroJogo extends javax.swing.JFrame {
        placarLocalJLabel.setEnabled(isJogandoEmUmaPartida);
     }
     
-     private void exibirPlacar() {
+     public void exibirPlacar() {
+        Color cor;
+        int local = 0;
+        int remoto = 0;
+        javax.swing.JLabel label = null;
         
+        for(int i = 0; i < 5; i++){
+            switch (i){
+                case 0: label = jogo1JLabel; break;
+                case 1: label = jogo2JLabel; break;
+                case 2: label = jogo3JLabel; break;
+                case 3: label = jogo4JLabel; break;
+                case 4: label = jogo5JLabel; break;
+            }
+            
+            cor = Color.DARK_GRAY;
+            if (isJogandoEmUmaPartida){
+                if(resultadosPartidas[i] == resultadoVazio && meuAtualJogo == 
+                        (i+1))
+                    cor = Color.BLACK;
+                else{
+                    switch (resultadosPartidas[i]){
+                        
+                        case jogadorLocalVenceu:
+                            local = local + 1;
+                            cor = COR_LOCAL;
+                            break;
+                        case jogadorRemotoVenceu:
+                            remoto = remoto + 1;
+                            cor = COR_REMOTO;
+                            break;
+                        default:
+                            cor = COR_EMPATE;
+                    }
+                }
+                
+                label.setEnabled((i +1) <= meuAtualJogo);
+            } else
+                label.setEnabled(false);
+            
+            label.setForeground(cor);
+        }
+        
+        placarLocalJLabel.setText(String.valueOf(local));
+        placarRemotoJLabel.setText(String.valueOf(remoto));
     }
     
-    private void limparTabuleiro() {
+    public void limparTabuleiro() {
         int posicao = 0;
         
         for (int i = 0; i < 3; i++){
@@ -678,8 +721,16 @@ public class TabuleiroJogo extends javax.swing.JFrame {
     private javax.swing.JLabel pos8JLabel;
     private javax.swing.JLabel pos9JLabel;
 
-   
-    public void exibirMensagens(String tipo, String endereco, String conteudo) {
+    private javax.swing.JLabel jogo1JLabel;
+    private javax.swing.JLabel jogo2JLabel;
+    private javax.swing.JLabel jogo3JLabel;
+    private javax.swing.JLabel jogo4JLabel;
+    private javax.swing.JLabel jogo5JLabel;
+
+    
+    
+    
+        public void exibirMensagens(String tipo, String endereco, String conteudo) {
         
         DefaultTableModel msg;
         msg = (DefaultTableModel)tabelaMensagens.getModel();
@@ -689,7 +740,4 @@ public class TabuleiroJogo extends javax.swing.JFrame {
         //Bia não esqueça desse comentario para apagar se não for usado!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //tabelaMensagens.changeSelection(tabelaMensagens.getRowCount() -1, 0, false, false);
     }
-    
-    
-    
 }
