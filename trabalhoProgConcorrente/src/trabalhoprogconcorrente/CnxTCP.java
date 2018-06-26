@@ -124,11 +124,28 @@ public class CnxTCP extends SwingWorker<Boolean, String> {
                 System.out.println("Erro: " + ex.getMessage()); //implementar método pra exibir mensagens
                 return false;
             }
-
         }
     }
 
-    public boolean enviarMensagem() {
-        return true;
+    public boolean enviarMensagemViaTCP(int num, String complemento) throws IOException {
+        String mensagem = "";
+        try{
+            if ("".equals(complemento) || complemento.isEmpty() || complemento
+                    == null)
+                mensagem = String.format("%02d005",num);
+            else
+                mensagem = String.format("%02d%03d%s", num, 5 +
+                        complemento.length(), complemento);
+            
+            outw.write(mensagem);
+            outw.flush();
+            
+            System.out.println("Sua mensagem:"+ mensagem); //implementar método pra exibir mensagens
+            
+            return true;
+        }catch(IOException ex){
+            System.out.println("Erro envio da mensagem:"+ mensagem); //implementar método pra exibir mensagens
+            return false;
+        }    
     }
 }
