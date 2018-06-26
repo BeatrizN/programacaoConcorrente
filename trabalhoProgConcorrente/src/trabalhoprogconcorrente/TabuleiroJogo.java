@@ -257,7 +257,7 @@ public class TabuleiroJogo extends javax.swing.JFrame {
         }
     }    
     
-    public void JogadorComecaJogando(int jogador) throws IOException {
+    public void JogadorQueComecaJogando(int jogador) throws IOException {
         aguardandoInicioJogo = false;
         
         iniciarSessaoJogo();
@@ -269,6 +269,39 @@ public class TabuleiroJogo extends javax.swing.JFrame {
         } else {
             statusJLabel.setText("Sua vez de jogar");
         }
+        
+    }
+    
+    public void marcarPosicao (int jogadorEscolhido, int posicao){
+        
+        int linha = (posicao - 1) /3;
+        int coluna = (posicao - 1) %3;
+        Color cor;
+        char marca;
+        
+        if (jogadorEscolhido == jogadorLocal){
+            cor = COR_LOCAL;
+            marca = simboloLocal;
+        } else{
+            cor = COR_REMOTO;
+            marca = simboloRemoto;
+        }
+        
+        jogoVelha[linha][coluna] = marca;
+        javax.swing.JLabel label = null;
+        
+        switch (posicao){
+            case 1: label = pos1JLabel; break;
+            case 2: label = pos2JLabel; break;
+            case 3: label = pos3JLabel; break;
+            case 4: label = pos4JLabel; break;
+            case 5: label = pos5JLabel; break;
+            case 6: label = pos6JLabel; break;
+            case 7: label = pos7JLabel; break;
+            case 8: label = pos8JLabel; break;
+            case 9: label = pos9JLabel; break;
+        }
+      
         
     }
 
