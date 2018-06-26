@@ -77,7 +77,6 @@ public class TabuleiroJogo extends javax.swing.JFrame {
     
     private int[] resultadosPartidas = new int[5];  // resultadosPartidas de cada jogo
     private int meuAtualJogo;          // número do jogo atual
- ////////////////////////////////////////////////////////////////
     // dados relacionados a threads e sockets
     private UDP udpEscutaThread;         // thread para leitura da porta UDP
     private TCP tcpEscutaThread;         // thread de escuta da porta TCP
@@ -85,16 +84,16 @@ public class TabuleiroJogo extends javax.swing.JFrame {
     private InetAddress addrBroadcast;         // endereço para broadcasting
     private InetAddress addrJogadorRemoto;     // endereço do jogador remoto
     private String apelidoRemoto;              // apelido do jogador remoto
-    private Timer quemEstaOnlineTimer;         // temporizador para saber quem está online
-    private Timer timeoutQuemEstaOnlineTimer;  // temporizador de timeout
-    private Timer timeoutAguardandoJogadorRemoto;    // temporizador de timeout
+    private Timer TempoJogadorOnline;         // temporizador para saber quem está online
+    private Timer timeoutJogadorOnlineTimer;  // temporizador de timeout
+    private Timer timeoutEsperandoJogadorRemoto;    // temporizador de timeout
     
     // status do programa
-    private boolean esperandoConexao;
-    private boolean esperandoInicioJogo;
-    private boolean esperandoConfirmacao;
-    private boolean esperandoJogadorRemoto;
-    private boolean esperandoRespostaConvite;
+    private boolean AguardandoConexao;
+    private boolean AguardandoInicioJogo;
+    private boolean AguardandoConfirmacao;
+    private boolean AguardandoJogadorRemoto;
+    private boolean AguardandoRespostaConvite;
     
     /**
      * Creates new form TabuleiroJogo
