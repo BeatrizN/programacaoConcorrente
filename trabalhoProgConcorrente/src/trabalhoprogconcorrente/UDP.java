@@ -63,7 +63,19 @@ public class UDP extends SwingWorker<Void, String> {
                             break;
                     case 2:
                             //
-                            break;                   
+                            break;   
+                    case 3:
+                            //
+                            break;
+                    case 4:
+                            //
+                            break;   
+                    case 5:
+                            //
+                            break;
+                    case 6:
+                            //
+                            break;   
                     default:
                             // Mensagem inválida.
                 }

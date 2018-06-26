@@ -1,13 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package trabalhoprogconcorrente;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.net.Socket;
 import javax.swing.SwingWorker;
 
 /**
@@ -28,7 +24,22 @@ public class TCP extends SwingWorker<Boolean, String> {
     
     @Override
     protected Boolean doInBackground() throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            while(true) {
+                Socket conexao = socket.accept();
+                if (conexao.getInetAddress().equals(enderecoIpRemoto) == true) {
+                    CnxTCP criaConexao = new CnxTCP(mainJogo, conexao); 
+                    criaConexao.execute();
+                    // Apresentar mensagem de conexao realizada com sucesso
+                    return true; 
+                } else {
+                   conexao.close();                    
+                    // Mensagem de erro na tentativa de conexao
+                }
+            }
+        }catch (IOException ex) {
+            return false;
+        }
     }
     
     public void encerraConexao() {
