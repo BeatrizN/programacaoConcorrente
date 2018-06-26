@@ -89,17 +89,21 @@ public class TabuleiroJogo extends javax.swing.JFrame {
     private Timer timeoutEsperandoJogadorRemoto;    // temporizador de timeout
     
     // status do programa
-    private boolean AguardandoConexao;
-    private boolean AguardandoInicioJogo;
-    private boolean AguardandoConfirmacao;
-    private boolean AguardandoJogadorRemoto;
-    private boolean AguardandoRespostaConvite;
+    private boolean aguardandoConexao;
+    private boolean aguardandoInicioJogo;
+    private boolean aguardandoConfirmacao;
+    private boolean aguardandoJogadorRemoto;
+    private boolean aguardandoRespostaConvite;
     
     /**
      * Creates new form TabuleiroJogo
      */
     public TabuleiroJogo() {
         initComponents();
+    }
+    
+    public void JogadorComecaJogando (int jogador){
+        
     }
     
 
