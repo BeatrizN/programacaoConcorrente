@@ -7,6 +7,7 @@ package trabalhoprogconcorrente;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -22,37 +23,47 @@ public class CnxTCP extends SwingWorker<Boolean, String>{
     private final TabuleiroJogo mainTabuleiro;
     private final Socket socket;
     
-    // leitura dos dados
     private InputStream entrada;  
     private InputStreamReader inr;  
     private BufferedReader bfr;
     
-    // envio dos dados
     private OutputStream saida;  
     private OutputStreamWriter outw;  
     private BufferedWriter bfw;      
 
-    public CnxTCP(TabuleiroJogo mainTabuleiro, Socket socket, InputStream entrada, InputStreamReader inr, BufferedReader bfr, OutputStream saida, OutputStreamWriter outw, BufferedWriter bfw) {
+    public CnxTCP(TabuleiroJogo mainTabuleiro, Socket socket) {
         this.mainTabuleiro = mainTabuleiro;
         this.socket = socket;
-        this.entrada = entrada;
-        this.inr = inr;
-        this.bfr = bfr;
-        this.saida = saida;
-        this.outw = outw;
-        this.bfw = bfw;
+                
+        try {
+            this.entrada  = this.socket.getInputStream();
+            this.inr = new InputStreamReader(this.entrada, "ISO-8859-1");
+            this.bfr = new BufferedReader(this.inr);
+            
+            this.saida =  this.socket.getOutputStream();
+            this.outw = new OutputStreamWriter(this.saida, "ISO-8859-1");
+            this.bfw = new BufferedWriter(this.outw); 
+        } catch (IOException e) {
+            // Mensagem de erro ao criação da nova conexão;
+        }
     }
     
-    
-    
-    public Socket getSocket()
-    {
-        return socket;
+    public Socket getSocket() {
+        return this.socket;
     }    
 
     @Override
     protected Boolean doInBackground() throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String mensagem;
+        while (true) {
+            try {
+                
+            } catch (IOException ex) {
+                //
+            }
+        //throw new UnsupportedOperationException("Not supported yet."); 
+        //To change body of generated methods, choose Tools | Templates.
+        }
     }
     
     public boolean enviarMensagem (){
