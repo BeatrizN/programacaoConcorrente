@@ -6,6 +6,7 @@
 package trabalhoprogconcorrente;
 
 import java.awt.Color;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.util.Random;
@@ -17,6 +18,7 @@ import javax.swing.Timer;
  * @author Alunoinf_2
  */
 public class TabuleiroJogo extends javax.swing.JFrame {
+    
     private char[][] jogoVelha = new char[3][3];  // jogoVelha do jogo
     private boolean isJogandoEmUmaPartida;    // indica se jogo está em andamento
     private boolean isConectado;  // indica se jogador local está conectado
@@ -28,33 +30,33 @@ public class TabuleiroJogo extends javax.swing.JFrame {
     private String meuNome;    // apelido do jogador local
     private DefaultListModel<OnLine> jogadores;  // lista de jogadores que estão online
     private final static Random aleatorio = new Random();   // gerador de números aleatórios
-    
+
     private final int portaUDP = 20181;
-    
+
     // cores dos jogadores no jogoVelha
     private final Color COR_LOCAL = new Color(51, 153, 0);
     private final Color COR_REMOTO = new Color(255, 0, 0);
-    private final Color COR_EMPATE = new Color(255,255,0);
-    
+    private final Color COR_EMPATE = new Color(255, 255, 0);
+
     // identificação dos jogadores
     public final static int jogadorLocal = 1;
     public final static int jogadorRemoto = 2;
     public final char simboloVazio = ' ';
     public final char simboloLocal = 'X';
     public final char simboloRemoto = 'O';
-    
+
     // motivos para jogo encerrar
     public final static int CONEXAO_TIMEOUT = 0;
     public final static int CONEXAO_CAIU = 1;
     public final static int JOGADOR_DESISTIU = 2;
     public final static int FIM_JOGO = 3;
-    
+
     // resultadosPartidas dos jogos
     private final int resultadoVazio = -1;
     private final int empate = 0;
     private final int jogadorLocalVenceu = 1;
     private final int jogadorRemotoVenceu = 2;
-    
+
     // posições no jogoVelha onde foi conseguido a vitória
     private final int SEM_GANHADOR = 0;
     private final int linha1 = 1;
@@ -65,7 +67,7 @@ public class TabuleiroJogo extends javax.swing.JFrame {
     private final int coluna3 = 6;
     private final int diagonalPrincipal = 7;
     private final int diagonalSecundaria = 8;
-    
+
     // tipos de mensagens mostradas na tela
     public static final String mensagemIN = "IN";
     public static final String mensagemOUT = "OUT";
@@ -87,14 +89,14 @@ public class TabuleiroJogo extends javax.swing.JFrame {
     private Timer TempoJogadorOnline;         // temporizador para saber quem está online
     private Timer timeoutJogadorOnlineTimer;  // temporizador de timeout
     private Timer timeoutEsperandoJogadorRemoto;    // temporizador de timeout
-    
+
     // status do programa
     private boolean aguardandoConexao;
     private boolean aguardandoInicioJogo;
     private boolean aguardandoConfirmacao;
     private boolean aguardandoJogadorRemoto;
     private boolean aguardandoRespostaConvite;
-    
+
     /**
      * Creates new form TabuleiroJogo
      */
@@ -102,10 +104,130 @@ public class TabuleiroJogo extends javax.swing.JFrame {
         initComponents();
     }
     
-    public void JogadorComecaJogando (int jogador){
+    private void iniciarSessaoJogo() throws IOException {
+        
+        if (timeoutEsperandoJogadorRemoto.isRunning()) {
+            timeoutEsperandoJogadorRemoto.stop();
+        }
+        
+        jogadorRemotoJLabel.setText(apelidoRemoto + "/" + simboloRemoto);
+        jogadorRemotoJLabel.setEnabled(true);
+        
+        if (fuiConvidado) {
+            int aux = aleatorio.nextInt(2) + 1;
+            if (aux == jogadorLocal) {
+                inicieiUltimoJogo = true;
+                minhaVez = inicieiUltimoJogo;
+                statusJLabel.setText("Agora é sua vez");
+            } else {
+                inicieiUltimoJogo = false;
+                minhaVez = inicieiUltimoJogo;
+                statusJLabel.setText("Aguardando o jogador jogar");
+            }
+            
+            String complemento = String.valueOf(aux);
+            conexaoTCP.enviarMensagemViaTCP(7, complemento);
+        }
+        
+        isJogandoEmUmaPartida = true;
+        meuAtualJogo = 1;
+        zerarPlacar();
+        
+        limparTabuleiro();
+        
+        placarRemotoJLabel.setEnabled(true);
+        placarLocalJLabel.setEnabled(true);
         
     }
     
+    private void zerarPlacar() {
+        Color corTabuleiro;
+        String nomeRemoto;
+        
+        if (isJogandoEmUmaPartida == true){
+            nomeRemoto = apelidoRemoto + "/" + simboloRemoto;
+            corTabuleiro = Color.BLACK;
+        } else {
+            nomeRemoto = "Remoto" + "/"  + simboloRemoto;
+            corTabuleiro = Color.BLUE;
+        }
+        
+        jogadorRemotoJLabel.setText(nomeRemoto);
+        posicoesJPanel.setBackground(corTabuleiro);
+        
+        for (int i = 0; i < 5; i++){
+            resultadosPartidas[i] = resultadoVazio;
+        }
+        
+        exibirPlacar();
+        
+        int posicao = 0;
+        
+        for ( int i = 0; i < 3; i++){
+            for (int j = 0; j < 3; j++){
+                jogoVelha[i][j] = simboloVazio;
+                
+                switch (posicao){
+                    case 0: pos1JLabel.setText(""); break;
+                    case 1: pos2JLabel.setText(""); break;
+                    case 2: pos3JLabel.setText(""); break;
+                    case 3: pos4JLabel.setText(""); break;
+                    case 4: pos5JLabel.setText(""); break;
+                    case 5: pos6JLabel.setText(""); break;
+                    case 6: pos7JLabel.setText(""); break;
+                    case 7: pos8JLabel.setText(""); break;
+                    case 8: pos9JLabel.setText(""); break;
+                }
+                posicao = posicao + 1;
+            }
+        }
+        
+       jogadorRemotoJLabel.setEnabled(isJogandoEmUmaPartida);
+       placarRemotoJLabel.setEnabled(isJogandoEmUmaPartida);
+       placarLocalJLabel.setEnabled(isJogandoEmUmaPartida);
+    }
+    
+     private void exibirPlacar() {
+        
+    }
+    
+    private void limparTabuleiro() {
+        int posicao = 0;
+        
+        for (int i = 0; i < 3; i++){
+            for (int j = 0; j < 3; j++){
+                jogoVelha[i][j] = simboloVazio;
+                
+                 switch (posicao){
+                    case 0: pos1JLabel.setText(""); break;
+                    case 1: pos2JLabel.setText(""); break;
+                    case 2: pos3JLabel.setText(""); break;
+                    case 3: pos4JLabel.setText(""); break;
+                    case 4: pos5JLabel.setText(""); break;
+                    case 5: pos6JLabel.setText(""); break;
+                    case 6: pos7JLabel.setText(""); break;
+                    case 7: pos8JLabel.setText(""); break;
+                    case 8: pos9JLabel.setText(""); break;
+                }
+                posicao = posicao + 1;
+            }
+        }
+    }    
+    
+    public void JogadorComecaJogando(int jogador) throws IOException {
+        aguardandoInicioJogo = false;
+        
+        iniciarSessaoJogo();
+        inicieiUltimoJogo = true;
+        
+        if (jogador == 1) {
+            minhaVez = inicieiUltimoJogo;
+            statusJLabel.setText("Aguardando jogador começar");
+        } else {
+            statusJLabel.setText("Sua vez de jogar");
+        }
+        
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -479,4 +601,18 @@ public class TabuleiroJogo extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     // End of variables declaration//GEN-END:variables
+    private javax.swing.JLabel statusJLabel;
+    private javax.swing.JLabel jogadorRemotoJLabel;
+    private javax.swing.JLabel placarLocalJLabel;
+    private javax.swing.JLabel placarRemotoJLabel;
+    private javax.swing.JPanel posicoesJPanel;
+    private javax.swing.JLabel pos1JLabel;
+    private javax.swing.JLabel pos2JLabel;
+    private javax.swing.JLabel pos3JLabel;
+    private javax.swing.JLabel pos4JLabel;
+    private javax.swing.JLabel pos5JLabel;
+    private javax.swing.JLabel pos6JLabel;
+    private javax.swing.JLabel pos7JLabel;
+    private javax.swing.JLabel pos8JLabel;
+    private javax.swing.JLabel pos9JLabel;
 }
