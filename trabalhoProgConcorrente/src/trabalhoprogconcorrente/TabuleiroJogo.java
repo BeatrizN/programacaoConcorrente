@@ -5,18 +5,104 @@
  */
 package trabalhoprogconcorrente;
 
+import java.awt.Color;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.util.Random;
+import javax.swing.DefaultListModel;
+import javax.swing.Timer;
+
 /**
  *
  * @author Alunoinf_2
  */
 public class TabuleiroJogo extends javax.swing.JFrame {
-
+    private char[][] jogoVelha = new char[3][3];  // jogoVelha do jogo
+    private boolean isJogandoEmUmaPartida;    // indica se jogo está em andamento
+    private boolean isConectado;  // indica se jogador local está conectado
+    private boolean minhaVez;       // indica se é a vez do jogador local
+    private boolean inicieiUltimoJogo;  // indica se último jogo foi iniciado pelo jogador local
+    private boolean fuiConvidado;   // indica se jogador local foi convidado
+    private ServerSocket servidorTCP;      // socket servidor TCP criado para jogador remoto se conectar
+    private CnxTCP conexaoTCP;      // conexão TCP com o jogador remoto
+    private String meuNome;    // apelido do jogador local
+    private DefaultListModel<OnLine> jogadores;  // lista de jogadores que estão online
+    private final static Random aleatorio = new Random();   // gerador de números aleatórios
+    
+    private final int portaUDP = 20181;
+    
+    // cores dos jogadores no jogoVelha
+    private final Color COR_LOCAL = new Color(51, 153, 0);
+    private final Color COR_REMOTO = new Color(255, 0, 0);
+    private final Color COR_EMPATE = new Color(255,255,0);
+    
+    // identificação dos jogadores
+    public final static int jogadorLocal = 1;
+    public final static int jogadorRemoto = 2;
+    public final char simboloVazio = ' ';
+    public final char simboloLocal = 'X';
+    public final char simboloRemoto = 'O';
+    
+    // motivos para jogo encerrar
+    public final static int CONEXAO_TIMEOUT = 0;
+    public final static int CONEXAO_CAIU = 1;
+    public final static int JOGADOR_DESISTIU = 2;
+    public final static int FIM_JOGO = 3;
+    
+    // resultadosPartidas dos jogos
+    private final int resultadoVazio = -1;
+    private final int empate = 0;
+    private final int jogadorLocalVenceu = 1;
+    private final int jogadorRemotoVenceu = 2;
+    
+    // posições no jogoVelha onde foi conseguido a vitória
+    private final int SEM_GANHADOR = 0;
+    private final int linha1 = 1;
+    private final int linha2 = 2;
+    private final int linha3 = 3;
+    private final int coluna1 = 4;
+    private final int coluna2 = 5;
+    private final int coluna3 = 6;
+    private final int diagonalPrincipal = 7;
+    private final int diagonalSecundaria = 8;
+    
+    // tipos de mensagens mostradas na tela
+    public static final String mensagemIN = "IN";
+    public static final String mensagemOUT = "OUT";
+    public static final String mensagemERRO = "ERRO";
+    public static final String mensagemINFO = "INFO";
+    public static final String mensagemTCP = "TCP";
+    public static final String mensagemUDP = "UDP";
+    public static final String mensagemSemProtocolo = "";
+    
+    private int[] resultadosPartidas = new int[5];  // resultadosPartidas de cada jogo
+    private int meuAtualJogo;          // número do jogo atual
+ ////////////////////////////////////////////////////////////////
+    // dados relacionados a threads e sockets
+    private UDP udpEscutaThread;         // thread para leitura da porta UDP
+    private TCP tcpEscutaThread;         // thread de escuta da porta TCP
+    private InetAddress addrLocal;             // endereço do jogador local
+    private InetAddress addrBroadcast;         // endereço para broadcasting
+    private InetAddress addrJogadorRemoto;     // endereço do jogador remoto
+    private String apelidoRemoto;              // apelido do jogador remoto
+    private Timer quemEstaOnlineTimer;         // temporizador para saber quem está online
+    private Timer timeoutQuemEstaOnlineTimer;  // temporizador de timeout
+    private Timer timeoutAguardandoJogadorRemoto;    // temporizador de timeout
+    
+    // status do programa
+    private boolean esperandoConexao;
+    private boolean esperandoInicioJogo;
+    private boolean esperandoConfirmacao;
+    private boolean esperandoJogadorRemoto;
+    private boolean esperandoRespostaConvite;
+    
     /**
      * Creates new form TabuleiroJogo
      */
     public TabuleiroJogo() {
         initComponents();
     }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
