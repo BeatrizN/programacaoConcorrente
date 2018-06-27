@@ -7,6 +7,8 @@ package trabalhoprogconcorrente;
 
 import java.awt.Color;
 import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.util.Random;
@@ -1016,9 +1018,37 @@ public class TabuleiroJogo extends javax.swing.JFrame {
 	    }
     }
 
-    private void enviarUDP(InetAddress enderecoIp, int i, String meuNome) {
-        //throw new UnsupportedOperationException("Not supported yet."); 
-        //To change body of generated methods, choose Tools | Templates.
+    public void enviarUDP(InetAddress enderecoIp, int numero, String texto, Boolean... auxiliar) {
+        String mensagem;
+        boolean exibir = true;
+        
+        if((texto == null) || texto.isEmpty()) {
+            mensagem = String.format("%02d005", numero);
+        } else {
+            mensagem = String.format("%02d%03d%s", numero, 5 + texto.length(), texto);
+        }
+        
+        if ((auxiliar.length > 0) && (auxiliar[0] instanceof Boolean)) {
+            exibir = !auxiliar[0];
+        }
+        DatagramSocket socket = null;
+        DatagramPacket pacote = new DatagramPacket(mensagem.getBytes(),
+                        mensagem.getBytes().length, enderecoIp, portaUDP);
+        
+        try {
+            socket = new DatagramSocket(0, addrLocal);
+            socket.setBroadcast(enderecoIp.equals(addrBroadcast));
+            socket.send(pacote);                    
+
+            if(exibir) {
+                exibirMensagens(mensagemOUT, enderecoIp.getHostAddress(), mensagem);
+            }
+        } catch (IOException ex) {
+            if(exibir) {
+                exibirMensagens(mensagemOUT, enderecoIp.getHostAddress(),
+                        "Mensagem inválida (Erro)");
+            }
+        }
     }
     
 }
