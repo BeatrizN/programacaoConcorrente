@@ -56,29 +56,30 @@ public class UDP extends SwingWorker<Void, String> {
                 }
 
                 String conteudoMensagem = "";
-                if (tamanhoMensagem > 5)
+                if (tamanhoMensagem > 5) {
                     conteudoMensagem = mensagem.substring(5);
+                }
 
                 int tipoMensagem = Integer.parseInt(mensagem.substring(0, 2));
                 switch(tipoMensagem) {
                     case 1:
-                            //
-                            break;
+                        mainJogo.adicionaOnLinesLista(tipoMensagem, conteudoMensagem, pacote.getAddress());
+                        break;
                     case 2:
-                            //
-                            break;   
+                        mainJogo.adicionaOnLinesLista(tipoMensagem, conteudoMensagem, pacote.getAddress());
+                        break;    
                     case 3:
-                            //
-                            break;
+                        //
+                        break;
                     case 4:
-                            //
-                            break;   
+                        //
+                        break;   
                     case 5:
-                            //
-                            break;
+                        //
+                        break;
                     case 6:
-                            //
-                            break;   
+                        //
+                        break;   
                     default:
                         mainJogo.exibirMensagens(mainJogo.mensagemIN, pacote.getAddress().
                             getHostAddress(), "Mensagem Inválida: " + mensagem);
