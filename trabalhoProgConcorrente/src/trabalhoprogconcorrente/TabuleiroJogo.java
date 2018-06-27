@@ -977,4 +977,48 @@ public class TabuleiroJogo extends javax.swing.JFrame {
         iniciarSessaoJogo();
     }
     
+    public boolean isNomeIgual(String nome, String nomeComparacao) {
+        boolean igual = (nomeComparacao.compareToIgnoreCase(nome) == 0);
+        return igual;
+    }
+    
+    public void adicionaOnLinesLista(int tipoMensagem, String nome, InetAddress enderecoIp) {
+        OnLine novo;
+        OnLine jogador;
+        for(int i = 0; i < jogadores.size(); ++i) {
+            jogador = jogadores.get(i);
+ 
+            if(isNomeIgual(nome, jogador.getNome())) {
+                jogador.setIsOnLine(true);
+                if(tipoMensagem == 1) {
+                    enviarUDP(enderecoIp, 2, meuNome);
+                }
+                
+                return;
+            }
+            
+            if (jogador.getNome().compareToIgnoreCase(nome) > 0) {
+                novo = new OnLine(nome, enderecoIp);
+                jogadores.add(i, novo);
+                if(tipoMensagem == 1) {
+                    enviarUDP(enderecoIp, 2, meuNome);
+                }
+
+                return;
+            }
+        }
+        
+        novo = new OnLine(nome, enderecoIp);
+        jogadores.addElement(novo);
+
+        if(tipoMensagem == 1) {
+            enviarUDP(enderecoIp, 2, meuNome);
+	    }
+    }
+
+    private void enviarUDP(InetAddress enderecoIp, int i, String meuNome) {
+        //throw new UnsupportedOperationException("Not supported yet."); 
+        //To change body of generated methods, choose Tools | Templates.
+    }
+    
 }
