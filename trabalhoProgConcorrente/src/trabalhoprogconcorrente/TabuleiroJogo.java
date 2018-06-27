@@ -22,7 +22,7 @@ import javax.swing.table.DefaultTableModel;
  * @author Alunoinf_2
  */
 public class TabuleiroJogo extends javax.swing.JFrame {
-    
+
     private char[][] jogoVelha = new char[3][3];  // jogoVelha do jogo
     private boolean isJogandoEmUmaPartida;    // indica se jogo está em andamento
     private boolean isConectado;  // indica se jogador local está conectado
@@ -80,7 +80,7 @@ public class TabuleiroJogo extends javax.swing.JFrame {
     public static final String mensagemTCP = "Protocolo TCP"; ////aparentemente não uso................
     public static final String mensagemUDP = "Protocolo UDP"; ////aparentemente não uso................
     public static final String mensagemSemProtocolo = ""; ////aparentemente não uso................
-    
+
     private int[] resultadosPartidas = new int[5];  // resultadosPartidas de cada jogo
     private int meuAtualJogo;          // número do jogo atual
     // dados relacionados a threads e sockets
@@ -107,16 +107,16 @@ public class TabuleiroJogo extends javax.swing.JFrame {
     public TabuleiroJogo() {
         initComponents();
     }
-    
+
     public void iniciarSessaoJogo() throws IOException {
-        
+
         if (timeoutEsperandoJogadorRemoto.isRunning()) {
             timeoutEsperandoJogadorRemoto.stop();
         }
-        
+
         jogadorRemotoJLabel.setText(apelidoRemoto + "/" + simboloRemoto);
         jogadorRemotoJLabel.setEnabled(true);
-        
+
         if (fuiConvidado) {
             int aux = aleatorio.nextInt(2) + 1;
             if (aux == jogadorLocal) {
@@ -128,92 +128,120 @@ public class TabuleiroJogo extends javax.swing.JFrame {
                 minhaVez = inicieiUltimoJogo;
                 statusJLabel.setText("Aguardando o jogador jogar");
             }
-            
+
             String complemento = String.valueOf(aux);
             conexaoTCP.enviarMensagemViaTCP(7, complemento);
         }
-        
+
         isJogandoEmUmaPartida = true;
         meuAtualJogo = 1;
         zerarPlacar();
-        
+
         limparTabuleiro();
-        
+
         placarRemotoJLabel.setEnabled(true);
         placarLocalJLabel.setEnabled(true);
-        
+
     }
-    
+
     public void zerarPlacar() {
         Color corTabuleiro;
         String nomeRemoto;
-        
-        if (isJogandoEmUmaPartida == true){
+
+        if (isJogandoEmUmaPartida == true) {
             nomeRemoto = apelidoRemoto + "/" + simboloRemoto;
             corTabuleiro = Color.BLACK;
         } else {
-            nomeRemoto = "Remoto" + "/"  + simboloRemoto;
+            nomeRemoto = "Remoto" + "/" + simboloRemoto;
             corTabuleiro = Color.BLUE;
         }
-        
+
         jogadorRemotoJLabel.setText(nomeRemoto);
         posicoesJPanel.setBackground(corTabuleiro);
-        
-        for (int i = 0; i < 5; i++){
+
+        for (int i = 0; i < 5; i++) {
             resultadosPartidas[i] = resultadoVazio;
         }
-        
+
         exibirPlacar();
-        
+
         int posicao = 0;
-        
-        for ( int i = 0; i < 3; i++){
-            for (int j = 0; j < 3; j++){
+
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
                 jogoVelha[i][j] = simboloVazio;
-                
-                switch (posicao){
-                    case 0: pos1JLabel.setText(""); break;
-                    case 1: pos2JLabel.setText(""); break;
-                    case 2: pos3JLabel.setText(""); break;
-                    case 3: pos4JLabel.setText(""); break;
-                    case 4: pos5JLabel.setText(""); break;
-                    case 5: pos6JLabel.setText(""); break;
-                    case 6: pos7JLabel.setText(""); break;
-                    case 7: pos8JLabel.setText(""); break;
-                    case 8: pos9JLabel.setText(""); break;
+
+                switch (posicao) {
+                    case 0:
+                        pos1JLabel.setText("");
+                        break;
+                    case 1:
+                        pos2JLabel.setText("");
+                        break;
+                    case 2:
+                        pos3JLabel.setText("");
+                        break;
+                    case 3:
+                        pos4JLabel.setText("");
+                        break;
+                    case 4:
+                        pos5JLabel.setText("");
+                        break;
+                    case 5:
+                        pos6JLabel.setText("");
+                        break;
+                    case 6:
+                        pos7JLabel.setText("");
+                        break;
+                    case 7:
+                        pos8JLabel.setText("");
+                        break;
+                    case 8:
+                        pos9JLabel.setText("");
+                        break;
                 }
                 posicao = posicao + 1;
             }
         }
-        
-       jogadorRemotoJLabel.setEnabled(isJogandoEmUmaPartida);
-       placarRemotoJLabel.setEnabled(isJogandoEmUmaPartida);
-       placarLocalJLabel.setEnabled(isJogandoEmUmaPartida);
+
+        jogadorRemotoJLabel.setEnabled(isJogandoEmUmaPartida);
+        placarRemotoJLabel.setEnabled(isJogandoEmUmaPartida);
+        placarLocalJLabel.setEnabled(isJogandoEmUmaPartida);
     }
-    
-     public void exibirPlacar() {
+
+    public void exibirPlacar() {
         Color cor;
         int local = 0;
         int remoto = 0;
         javax.swing.JLabel label = null;
-        
-        for(int i = 0; i < 5; i++){
-            switch (i){
-                case 0: label = jogo1JLabel; break;
-                case 1: label = jogo2JLabel; break;
-                case 2: label = jogo3JLabel; break;
-                case 3: label = jogo4JLabel; break;
-                case 4: label = jogo5JLabel; break;
+
+        for (int i = 0; i < 5; i++) {
+            switch (i) {
+                case 0:
+                    label = jogo1JLabel;
+                    break;
+                case 1:
+                    label = jogo2JLabel;
+                    break;
+                case 2:
+                    label = jogo3JLabel;
+                    break;
+                case 3:
+                    label = jogo4JLabel;
+                    break;
+                case 4:
+                    label = jogo5JLabel;
+                    break;
             }
-            
+
             cor = Color.DARK_GRAY;
-            if (isJogandoEmUmaPartida){
-                if(resultadosPartidas[i] == resultadoVazio && meuAtualJogo == 
-                        (i+1))
+            if (isJogandoEmUmaPartida) {
+                if (resultadosPartidas[i] == resultadoVazio && meuAtualJogo
+                        == (i + 1)) {
                     cor = Color.BLACK;
-                else{
-                    switch (resultadosPartidas[i]){
-                        
+                } else {
+                    switch (resultadosPartidas[i]) {
+
                         case jogadorLocalVenceu:
                             local = local + 1;
                             cor = COR_LOCAL;
@@ -226,206 +254,258 @@ public class TabuleiroJogo extends javax.swing.JFrame {
                             cor = COR_EMPATE;
                     }
                 }
-                
-                label.setEnabled((i +1) <= meuAtualJogo);
-            } else
+
+                label.setEnabled((i + 1) <= meuAtualJogo);
+            } else {
                 label.setEnabled(false);
-            
+            }
+
             label.setForeground(cor);
         }
-        
+
         placarLocalJLabel.setText(String.valueOf(local));
         placarRemotoJLabel.setText(String.valueOf(remoto));
     }
-    
+
     public void limparTabuleiro() {
         int posicao = 0;
-        
-        for (int i = 0; i < 3; i++){
-            for (int j = 0; j < 3; j++){
+
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
                 jogoVelha[i][j] = simboloVazio;
-                
-                 switch (posicao){
-                    case 0: pos1JLabel.setText(""); break;
-                    case 1: pos2JLabel.setText(""); break;
-                    case 2: pos3JLabel.setText(""); break;
-                    case 3: pos4JLabel.setText(""); break;
-                    case 4: pos5JLabel.setText(""); break;
-                    case 5: pos6JLabel.setText(""); break;
-                    case 6: pos7JLabel.setText(""); break;
-                    case 7: pos8JLabel.setText(""); break;
-                    case 8: pos9JLabel.setText(""); break;
+
+                switch (posicao) {
+                    case 0:
+                        pos1JLabel.setText("");
+                        break;
+                    case 1:
+                        pos2JLabel.setText("");
+                        break;
+                    case 2:
+                        pos3JLabel.setText("");
+                        break;
+                    case 3:
+                        pos4JLabel.setText("");
+                        break;
+                    case 4:
+                        pos5JLabel.setText("");
+                        break;
+                    case 5:
+                        pos6JLabel.setText("");
+                        break;
+                    case 6:
+                        pos7JLabel.setText("");
+                        break;
+                    case 7:
+                        pos8JLabel.setText("");
+                        break;
+                    case 8:
+                        pos9JLabel.setText("");
+                        break;
                 }
                 posicao = posicao + 1;
             }
         }
-    }    
-    
+    }
+
     public void JogadorQueComecaJogando(int jogador) throws IOException {
         aguardandoInicioJogo = false;
-        
+
         iniciarSessaoJogo();
         inicieiUltimoJogo = true;
-        
+
         if (jogador == 1) {
             minhaVez = inicieiUltimoJogo;
             statusJLabel.setText("Aguardando jogador começar");
         } else {
             statusJLabel.setText("Sua vez de jogar");
         }
-        
+
     }
-    
-    public void marcarPosicao (int jogadorEscolhido, int posicao) throws IOException{
-        
-        int linha = (posicao - 1) /3;
-        int coluna = (posicao - 1) %3;
+
+    public void marcarPosicao(int jogadorEscolhido, int posicao) throws IOException {
+
+        int linha = (posicao - 1) / 3;
+        int coluna = (posicao - 1) % 3;
         Color cor;
         char marca;
-        
-        if (jogadorEscolhido == jogadorLocal){
+
+        if (jogadorEscolhido == jogadorLocal) {
             cor = COR_LOCAL;
             marca = simboloLocal;
-        } else{
+        } else {
             cor = COR_REMOTO;
             marca = simboloRemoto;
         }
-        
+
         jogoVelha[linha][coluna] = marca;
         javax.swing.JLabel label = null;
-        
-        switch (posicao){
-            case 1: label = pos1JLabel; break;
-            case 2: label = pos2JLabel; break;
-            case 3: label = pos3JLabel; break;
-            case 4: label = pos4JLabel; break;
-            case 5: label = pos5JLabel; break;
-            case 6: label = pos6JLabel; break;
-            case 7: label = pos7JLabel; break;
-            case 8: label = pos8JLabel; break;
-            case 9: label = pos9JLabel; break;
+
+        switch (posicao) {
+            case 1:
+                label = pos1JLabel;
+                break;
+            case 2:
+                label = pos2JLabel;
+                break;
+            case 3:
+                label = pos3JLabel;
+                break;
+            case 4:
+                label = pos4JLabel;
+                break;
+            case 5:
+                label = pos5JLabel;
+                break;
+            case 6:
+                label = pos6JLabel;
+                break;
+            case 7:
+                label = pos7JLabel;
+                break;
+            case 8:
+                label = pos8JLabel;
+                break;
+            case 9:
+                label = pos9JLabel;
+                break;
         }
-        
+
         label.setForeground(cor);
         label.setText(Character.toString(marca));
-        
-        if (jogadorEscolhido == jogadorLocal)
-            conexaoTCP.enviarMensagemViaTCP(8,String.valueOf(posicao));
-        
+
+        if (jogadorEscolhido == jogadorLocal) {
+            conexaoTCP.enviarMensagemViaTCP(8, String.valueOf(posicao));
+        }
+
         int ganhador = jogadorVencedor();
-        
-        if (ganhador != SEM_GANHADOR){
+
+        if (ganhador != SEM_GANHADOR) {
             resultadosPartidas[meuAtualJogo - 1] = ganhador % 10;
             exibirResultadoPartida(ganhador);
-            novaPartida(ganhador);   
+            novaPartida(ganhador);
         }
-        
-        if (jogadorEscolhido == jogadorLocal){
+
+        if (jogadorEscolhido == jogadorLocal) {
             minhaVez = false;
             statusJLabel.setText("Aguardando o jogador iniciar");
-        } else{
+        } else {
             minhaVez = true;
             statusJLabel.setText("Agora sua vez");
         }
-        
+
     }
-    
-     private int jogadorVencedor() {
-      for (int linha = 0; linha <3; linha++){
-          if ((jogoVelha[linha][0] == jogoVelha[linha][1]) &&
-                  (jogoVelha[linha][1] == jogoVelha[linha][2])
-                  && jogoVelha[linha][0] != simboloVazio){
-              int resultado = 0;
-              switch (linha){
-                  case 0: resultado = linha1; break;
-                  case 1: resultado = linha2; break;
-                  case 2: resultado = linha3; break;
-              }
-              return 10 * resultado + (jogoVelha[linha][0] == simboloLocal ?
-                      jogadorLocal : jogadorRemoto);
-          }
-      }
-      
-      for(int coluna =0; coluna <3; coluna++){
-         if ((jogoVelha[0][coluna] == jogoVelha[1][coluna]) &&
-                  (jogoVelha[1][coluna] == jogoVelha[2][coluna])
-                  && jogoVelha[0][coluna] != simboloVazio){
-             int resultado = 0;
-             switch(coluna){
-                 case 0: resultado = coluna1; break;
-                 case 1: resultado = coluna2; break;
-                 case 2: resultado = coluna3; break;
-             }
-             
-              return 10 * resultado +
-                       (jogoVelha[0][coluna] == simboloLocal ? jogadorLocal :
-                      jogadorRemoto);
-              
-         } 
-      }
-      
-      if ((jogoVelha[0][0] == jogoVelha[1][1]) &&
-              (jogoVelha[0][0] != simboloVazio) && (jogoVelha[1][1] == 
-              jogoVelha[2][2]))
-          return 10 * diagonalPrincipal +
-                       (jogoVelha[0][0] == simboloLocal ? jogadorLocal :
-                  jogadorRemoto);
-      
-      if((jogoVelha[0][2] != simboloVazio) &&
-           (jogoVelha[0][2] == jogoVelha[1][1]) &&
-           (jogoVelha[1][1] == jogoVelha[2][0]))
-                return 10 * diagonalSecundaria +
-                       (jogoVelha[0][2] == simboloLocal ? jogadorLocal : jogadorRemoto);
-      
-      return SEM_GANHADOR;
+
+    private int jogadorVencedor() {
+        for (int linha = 0; linha < 3; linha++) {
+            if ((jogoVelha[linha][0] == jogoVelha[linha][1])
+                    && (jogoVelha[linha][1] == jogoVelha[linha][2])
+                    && jogoVelha[linha][0] != simboloVazio) {
+                int resultado = 0;
+                switch (linha) {
+                    case 0:
+                        resultado = linha1;
+                        break;
+                    case 1:
+                        resultado = linha2;
+                        break;
+                    case 2:
+                        resultado = linha3;
+                        break;
+                }
+                return 10 * resultado + (jogoVelha[linha][0] == simboloLocal
+                        ? jogadorLocal : jogadorRemoto);
+            }
+        }
+
+        for (int coluna = 0; coluna < 3; coluna++) {
+            if ((jogoVelha[0][coluna] == jogoVelha[1][coluna])
+                    && (jogoVelha[1][coluna] == jogoVelha[2][coluna])
+                    && jogoVelha[0][coluna] != simboloVazio) {
+                int resultado = 0;
+                switch (coluna) {
+                    case 0:
+                        resultado = coluna1;
+                        break;
+                    case 1:
+                        resultado = coluna2;
+                        break;
+                    case 2:
+                        resultado = coluna3;
+                        break;
+                }
+
+                return 10 * resultado
+                        + (jogoVelha[0][coluna] == simboloLocal ? jogadorLocal
+                                : jogadorRemoto);
+
+            }
+        }
+
+        if ((jogoVelha[0][0] == jogoVelha[1][1])
+                && (jogoVelha[0][0] != simboloVazio) && (jogoVelha[1][1]
+                == jogoVelha[2][2])) {
+            return 10 * diagonalPrincipal
+                    + (jogoVelha[0][0] == simboloLocal ? jogadorLocal
+                            : jogadorRemoto);
+        }
+
+        if ((jogoVelha[0][2] != simboloVazio)
+                && (jogoVelha[0][2] == jogoVelha[1][1])
+                && (jogoVelha[1][1] == jogoVelha[2][0])) {
+            return 10 * diagonalSecundaria
+                    + (jogoVelha[0][2] == simboloLocal ? jogadorLocal : jogadorRemoto);
+        }
+
+        return SEM_GANHADOR;
     }
-     
+
     private void exibirResultadoPartida(int ganhador) {
-       destacarPlacarTabuleiro(ganhador / 10);
-       exibirPlacar();
-       String mensagem = "";
-       
-       switch (ganhador % 10){
-           case jogadorLocalVenceu: 
-               mensagem = "Você é o ganhador!!";
-               break;
-           case jogadorRemotoVenceu:
-               mensagem = "Você não ganhou ! Não foi dessa fez";
-               break;
-           case empate:
-               mensagem = "A partida ficou empatado! ninguém ganhou";
-               break;
-       }
-       
-       if (meuAtualJogo == 5){
-           int remoto = Integer.parseInt(placarRemotoJLabel.getText());
-           int local = Integer.parseInt(placarLocalJLabel.getText());
-           
-           mensagem += "\n\n Placar final:" +
-                   "\n " + meuNome + ":" + local + 
-                   "\n" + apelidoRemoto + ":" + remoto +
-                   "\n\n";
-           if (local == remoto)
-               mensagem += "Você ganhou essa sensão, SHOW!!";
-           else
-               mensagem += apelidoRemoto + "Ganhou a sessão!";
-           
-           mensagem += "\n\nPara jogar novamente é necessário convidar jogador"
-                   + "novamente";    
-       }
-       
-       JOptionPane.showMessageDialog(this, mensagem, "A partida" + meuAtualJogo
-               + "de 5.", JOptionPane.INFORMATION_MESSAGE);
-    } 
-    
-     private void destacarPlacarTabuleiro(int posicaoVencedor) {
-       
-         boolean[][] destaca = {{false, false, false},
-                               {false, false, false},
-                               {false, false, false}};
-        
-        switch(posicaoVencedor)
-        {
+        destacarPlacarTabuleiro(ganhador / 10);
+        exibirPlacar();
+        String mensagem = "";
+
+        switch (ganhador % 10) {
+            case jogadorLocalVenceu:
+                mensagem = "Você é o ganhador!!";
+                break;
+            case jogadorRemotoVenceu:
+                mensagem = "Você não ganhou ! Não foi dessa fez";
+                break;
+            case empate:
+                mensagem = "A partida ficou empatado! ninguém ganhou";
+                break;
+        }
+
+        if (meuAtualJogo == 5) {
+            int remoto = Integer.parseInt(placarRemotoJLabel.getText());
+            int local = Integer.parseInt(placarLocalJLabel.getText());
+
+            mensagem += "\n\n Placar final:"
+                    + "\n " + meuNome + ":" + local
+                    + "\n" + apelidoRemoto + ":" + remoto
+                    + "\n\n";
+            if (local == remoto) {
+                mensagem += "Você ganhou essa sensão, SHOW!!";
+            } else {
+                mensagem += apelidoRemoto + "Ganhou a sessão!";
+            }
+
+            mensagem += "\n\nPara jogar novamente é necessário convidar jogador"
+                    + "novamente";
+        }
+
+        JOptionPane.showMessageDialog(this, mensagem, "A partida" + meuAtualJogo
+                + "de 5.", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void destacarPlacarTabuleiro(int posicaoVencedor) {
+
+        boolean[][] destaca = {{false, false, false},
+        {false, false, false},
+        {false, false, false}};
+
+        switch (posicaoVencedor) {
             case linha1:
                 destaca[0][0] = destaca[0][1] = destaca[0][2] = true;
                 break;
@@ -451,59 +531,167 @@ public class TabuleiroJogo extends javax.swing.JFrame {
                 destaca[0][2] = destaca[1][1] = destaca[2][0] = true;
                 break;
         }
-        
+
         int linha, coluna;
         javax.swing.JLabel label = null;
-        for(int pos = 0; pos < 9; ++pos)
-        {
+        for (int pos = 0; pos < 9; ++pos) {
             linha = pos / 3;
             coluna = pos % 3;
-            switch(pos)
-            {
-                case 0: label = pos1JLabel; break;
-                case 1: label = pos2JLabel; break;
-                case 2: label = pos3JLabel; break;
-                case 3: label = pos4JLabel; break;
-                case 4: label = pos5JLabel; break;
-                case 5: label = pos6JLabel; break;
-                case 6: label = pos7JLabel; break;
-                case 7: label = pos8JLabel; break;
-                case 8: label = pos9JLabel; break;
+            switch (pos) {
+                case 0:
+                    label = pos1JLabel;
+                    break;
+                case 1:
+                    label = pos2JLabel;
+                    break;
+                case 2:
+                    label = pos3JLabel;
+                    break;
+                case 3:
+                    label = pos4JLabel;
+                    break;
+                case 4:
+                    label = pos5JLabel;
+                    break;
+                case 5:
+                    label = pos6JLabel;
+                    break;
+                case 6:
+                    label = pos7JLabel;
+                    break;
+                case 7:
+                    label = pos8JLabel;
+                    break;
+                case 8:
+                    label = pos9JLabel;
+                    break;
             }
-            
-            if (destaca[linha][coluna] == false)
+
+            if (destaca[linha][coluna] == false) {
                 label.setForeground(Color.BLUE);
+            }
         }
     }
-     
+
     private void novaPartida(int ultimoGanhador) throws IOException {
         limparTabuleiro();
-        
+
         meuAtualJogo = meuAtualJogo + 1;
         exibirPlacar();
-        
-        if (ultimoGanhador != jogadorLocal)
-        {
+
+        if (ultimoGanhador != jogadorLocal) {
             boolean enviaMensagem = true;
-            if(ultimoGanhador == empate)
+            if (ultimoGanhador == empate) {
                 enviaMensagem = !inicieiUltimoJogo;
-            
-            if (enviaMensagem)
-            {
+            }
+
+            if (enviaMensagem) {
                 conexaoTCP.enviarMensagemViaTCP(9, null);
-                
+
                 minhaVez = inicieiUltimoJogo = true;
                 statusJLabel.setText("Sua vez de jogar");
             }
-        }
-        else
-        {
+        } else {
             minhaVez = inicieiUltimoJogo = false;
             statusJLabel.setText("Aguardando início da partida");
             aguardandoInicioJogo = true;
-        } 
+        }
     }
- 
+
+    public void jogadorRemotocomecaJogando() {
+        aguardandoInicioJogo = false;
+        statusJLabel.setText("Aguardando o jogador");
+    }
+
+    public void finalizarConexaoViaTCP(int desistencia) throws IOException {
+        if (isJogandoEmUmaPartida == true) {
+            isJogandoEmUmaPartida = false;
+            zerarPlacar();
+            limparTabuleiro();
+        }
+
+        int portaJogadorRemoto = 0;
+        String addrRemoto = "";
+
+        if (conexaoTCP.getSocket() != null && conexaoTCP != null) {
+            portaJogadorRemoto = conexaoTCP.getSocket().getPort();
+
+            if (conexaoTCP.getSocket().getRemoteSocketAddress() != null) {
+                addrRemoto = conexaoTCP.getSocket().getRemoteSocketAddress().
+                        toString();
+            }
+        }
+
+        try {
+            if (servidorTCP != null) {
+                servidorTCP.close();
+
+                if (tcpEscutaThread != null) {
+                    tcpEscutaThread.cancel(true);
+                }
+            }
+        } catch (IOException ex) {
+
+        }
+
+        tcpEscutaThread = null;
+        servidorTCP = null;
+
+        if (conexaoTCP != null) {
+            conexaoTCP.cancel(true);
+        }
+
+        conexaoTCP = null;
+
+        if (desistencia == CONEXAO_TIMEOUT) {
+            JOptionPane.showMessageDialog(null,
+                    "TIMEOUT: aguardando conexão remota.",
+                    "Encerrar jogo",
+                    JOptionPane.WARNING_MESSAGE);
+        }
+
+        if (desistencia == CONEXAO_CAIU) {
+            JOptionPane.showMessageDialog(null,
+                    "Conexão com o jogador remoto caiu.",
+                    "Encerrar jogo",
+                    JOptionPane.WARNING_MESSAGE);
+        }
+
+        if (desistencia == JOGADOR_DESISTIU) {
+            JOptionPane.showMessageDialog(null,
+                    "O jogador remoto desistiu do jogo.",
+                    "Encerrar jogo",
+                    JOptionPane.WARNING_MESSAGE);
+        }
+
+        aguardandoInicioJogo = false;
+        aguardandoConexao = aguardandoInicioJogo;
+
+        aguardandoJogadorRemoto = false;
+        aguardandoConfirmacao = aguardandoJogadorRemoto;
+
+        posicoesJPanel.setBackground(Color.BLUE);
+
+        statusJLabel.setText("");
+
+        exibirMensagem(mensagemINF, mensagemTCP, addrRemoto, portaJogadorRemoto,
+                "Conexão foi encerrada");
+        exibirMensagem(mensagemINF, mensagemSemProtocolo, "", 0, "O jogo acabou"
+        );
+    }
+
+    public void exibirMensagem(String mensagem, String protocolo, String endereco,
+             int porta, String conteudo) {
+        DefaultTableModel modelo = (DefaultTableModel) mensagensJTable.getModel();
+        modelo.addRow(new String[]{mensagem, protocolo, endereco,
+            (porta > 0 ? String.valueOf(porta) : ""),
+            conteudo});
+        
+        mensagensJTable.changeSelection(mensagensJTable.getRowCount() -1,0,
+                false, false);
+    }
+   
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -951,104 +1139,101 @@ public class TabuleiroJogo extends javax.swing.JFrame {
     private javax.swing.JLabel pos7JLabel;
     private javax.swing.JLabel pos8JLabel;
     private javax.swing.JLabel pos9JLabel;
-
+    private javax.swing.JTable mensagensJTable;
     private javax.swing.JLabel jogo1JLabel;
     private javax.swing.JLabel jogo2JLabel;
     private javax.swing.JLabel jogo3JLabel;
     private javax.swing.JLabel jogo4JLabel;
     private javax.swing.JLabel jogo5JLabel;
 
-    
-    
-    
     public void exibirMensagens(String tipo, String endereco, String conteudo) {
-        
+
         DefaultTableModel msg;
-        msg = (DefaultTableModel)tabelaMensagens.getModel();
-        
-        msg.addRow(new String[] {tipo, endereco, conteudo});
-        
+        msg = (DefaultTableModel) tabelaMensagens.getModel();
+
+        msg.addRow(new String[]{tipo, endereco, conteudo});
+
         //Bia não esqueça desse comentario para apagar se não for usado!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //tabelaMensagens.changeSelection(tabelaMensagens.getRowCount() -1, 0, false, false);
     }
-    
-     public void conectou (CnxTCP cnx) throws IOException {
+
+    public void conectou(CnxTCP cnx) throws IOException {
         aguardandoConexao = false;
         this.conexaoTCP = cnx;
         servidorTCP = null;
         iniciarSessaoJogo();
     }
-    
+
     public boolean isNomeIgual(String nome, String nomeComparacao) {
         boolean igual = (nomeComparacao.compareToIgnoreCase(nome) == 0);
         return igual;
     }
-    
+
     public void adicionaOnLinesLista(int tipoMensagem, String nome, InetAddress enderecoIp) {
         OnLine novo;
         OnLine jogador;
-        for(int i = 0; i < jogadores.size(); ++i) {
+        for (int i = 0; i < jogadores.size(); ++i) {
             jogador = jogadores.get(i);
- 
-            if(isNomeIgual(nome, jogador.getNome())) {
+
+            if (isNomeIgual(nome, jogador.getNome())) {
                 jogador.setIsOnLine(true);
-                if(tipoMensagem == 1) {
+                if (tipoMensagem == 1) {
                     enviarUDP(enderecoIp, 2, meuNome);
                 }
-                
+
                 return;
             }
-            
+
             if (jogador.getNome().compareToIgnoreCase(nome) > 0) {
                 novo = new OnLine(nome, enderecoIp);
                 jogadores.add(i, novo);
-                if(tipoMensagem == 1) {
+                if (tipoMensagem == 1) {
                     enviarUDP(enderecoIp, 2, meuNome);
                 }
 
                 return;
             }
         }
-        
+
         novo = new OnLine(nome, enderecoIp);
         jogadores.addElement(novo);
 
-        if(tipoMensagem == 1) {
+        if (tipoMensagem == 1) {
             enviarUDP(enderecoIp, 2, meuNome);
-	    }
+        }
     }
 
     public void enviarUDP(InetAddress enderecoIp, int numero, String texto, Boolean... auxiliar) {
         String mensagem;
         boolean exibir = true;
-        
-        if((texto == null) || texto.isEmpty()) {
+
+        if ((texto == null) || texto.isEmpty()) {
             mensagem = String.format("%02d005", numero);
         } else {
             mensagem = String.format("%02d%03d%s", numero, 5 + texto.length(), texto);
         }
-        
+
         if ((auxiliar.length > 0) && (auxiliar[0] instanceof Boolean)) {
             exibir = !auxiliar[0];
         }
         DatagramSocket socket = null;
         DatagramPacket pacote = new DatagramPacket(mensagem.getBytes(),
-                        mensagem.getBytes().length, enderecoIp, portaUDP);
-        
+                mensagem.getBytes().length, enderecoIp, portaUDP);
+
         try {
             socket = new DatagramSocket(0, addrLocal);
             socket.setBroadcast(enderecoIp.equals(addrBroadcast));
-            socket.send(pacote);                    
+            socket.send(pacote);
 
-            if(exibir) {
+            if (exibir) {
                 exibirMensagens(mensagemOUT, enderecoIp.getHostAddress(), mensagem);
             }
         } catch (IOException ex) {
-            if(exibir) {
+            if (exibir) {
                 exibirMensagens(mensagemOUT, enderecoIp.getHostAddress(),
                         "Mensagem inválida (Erro)");
             }
         }
     }
-    
+
 }

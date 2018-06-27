@@ -20,39 +20,43 @@ import javax.swing.SwingWorker;
  * @author Alunoinf_2
  */
 public class CnxTCP extends SwingWorker<Boolean, String> {
-
+    
     private final TabuleiroJogo mainTabuleiro;
     private final Socket socket;
-
+    
     private InputStream entrada;
     private InputStreamReader inr;
     private BufferedReader bfr;
-
+    
     private OutputStream saida;
     private OutputStreamWriter outw;
     private BufferedWriter bfw;
-
+    
     public CnxTCP(TabuleiroJogo mainTabuleiro, Socket socket) {
         this.mainTabuleiro = mainTabuleiro;
         this.socket = socket;
-
+        
         try {
             this.entrada = this.socket.getInputStream();
             this.inr = new InputStreamReader(this.entrada, "ISO-8859-1");
             this.bfr = new BufferedReader(this.inr);
-
+            
             this.saida = this.socket.getOutputStream();
             this.outw = new OutputStreamWriter(this.saida, "ISO-8859-1");
             this.bfw = new BufferedWriter(this.outw);
         } catch (IOException e) {
-            System.out.println("Erro: " + e.getMessage()); //implementar método pra exibir mensagens
+            mainTabuleiro.exibirMensagem(TabuleiroJogo.mensagemERRO,
+                    TabuleiroJogo.mensagemTCP,
+                    socket.getRemoteSocketAddress().toString(),
+                    socket.getPort(),
+                    "Erro ao criar uma nova conexão");
         }
     }
-
+    
     public Socket getSocket() {
         return this.socket;
     }
-
+    
     @Override
     protected Boolean doInBackground() throws Exception {
         String mensagem;
@@ -62,53 +66,67 @@ public class CnxTCP extends SwingWorker<Boolean, String> {
                 if (!"".equals(mensagem.trim())) {
                     int tamanhoMensagem = Integer.parseInt(mensagem.substring(2,
                             5));
-
+                    
                     if (mensagem.length() != tamanhoMensagem) {
-                        System.out.println("Tamanho da mensagem não é válido"); //implementar método pra exibir mensagens
+                        mainTabuleiro.exibirMensagem(TabuleiroJogo.mensagemIN,
+                                TabuleiroJogo.mensagemTCP, socket.
+                                        getRemoteSocketAddress().toString(),
+                                socket.getPort(), "Erro no tamanho da mensagem"
+                                + mensagem);
                     }
                     int tamanhoMinimo = 5;
-
+                    
                     if (mensagem.length() < tamanhoMinimo) {
-                        System.out.println("Tamanho da mensagem não é válido"); //implementar método pra exibir mensagens
+                        mainTabuleiro.exibirMensagem(TabuleiroJogo.mensagemIN,
+                                TabuleiroJogo.mensagemTCP, socket.
+                                        getRemoteSocketAddress().toString(),
+                                socket.getPort(), "Mensagem não é valida, devido"
+                                + " ao tamanho, que é: " + mensagem);;
                     }
-
+                    
                     String complemento;
-
+                    
                     if (tamanhoMensagem > tamanhoMinimo) {
                         complemento = mensagem.substring(5);
                     }
-
+                    
                     int tamanhoTotalMsg = Integer.parseInt(mensagem.substring(0,
                             2));
-                    complemento = "";                   
+                    complemento = "";
                     int posicao = Integer.parseInt(complemento);
-
+                    
                     switch (tamanhoTotalMsg) {
                         case 7:
-                            if (posicao == 1 || posicao == 2) 
+                            if (posicao == 1 || posicao == 2) {
                                 mainTabuleiro.JogadorQueComecaJogando(posicao);
+                            }
                             break;
-                    
+                        
                         case 8:
-                            if(posicao> 0 && posicao <10)
+                            if (posicao > 0 && posicao < 10) {
                                 mainTabuleiro.marcarPosicao(mainTabuleiro.jogadorRemoto, posicao);
+                            }
                             break;
-                            
+                        
                         case 9:
-                            //mainTabuleiro. nome metodo que inicial jogo
+                            mainTabuleiro.jogadorRemotocomecaJogando();
                             break;
-                            
+                        
                         case 10:
-                            //MainTabuleiro.nome metodo que encerra conexão TCP, jogador desistiu;
+                            mainTabuleiro.finalizarConexaoViaTCP(TabuleiroJogo.JOGADOR_DESISTIU);
                             break;
                         
                         default:
-                            System.out.println("Mensagem inválida"); //implementar método pra exibir mensagens
+                            mainTabuleiro.exibirMensagem(TabuleiroJogo.mensagemIN,
+                                    TabuleiroJogo.mensagemTCP, socket.
+                                            getRemoteSocketAddress().toString(),
+                                    socket.getPort(), "Mnsagem não é válida, o"
+                                    + "tamanho dela é: " + mensagem);
                     }
-
-                    System.out.println(mensagem); //implementar método pra exibir mensagem;    
-                } else{
-                    //MainTabuleiro.nome metodo que encerra conexão TCP, conexao caiu;
+                    
+                } else {
+                    
+                    mainTabuleiro.finalizarConexaoViaTCP(TabuleiroJogo.CONEXAO_CAIU);
                     
                     Thread.currentThread().stop();
                     
@@ -121,31 +139,40 @@ public class CnxTCP extends SwingWorker<Boolean, String> {
                     bfw.close();
                 }
             } catch (IOException ex) {
-                System.out.println("Erro: " + ex.getMessage()); //implementar método pra exibir mensagens
+                mainTabuleiro.exibirMensagem(TabuleiroJogo.mensagemIN,
+                        TabuleiroJogo.mensagemTCP, socket.
+                                getRemoteSocketAddress().toString(), socket.
+                                getPort(), ex.getMessage());
                 return false;
             }
         }
     }
-
+    
     public boolean enviarMensagemViaTCP(int num, String complemento) throws IOException {
         String mensagem = "";
-        try{
+        try {
             if ("".equals(complemento) || complemento.isEmpty() || complemento
-                    == null)
-                mensagem = String.format("%02d005",num);
-            else
-                mensagem = String.format("%02d%03d%s", num, 5 +
-                        complemento.length(), complemento);
+                    == null) {
+                mensagem = String.format("%02d005", num);
+            } else {
+                mensagem = String.format("%02d%03d%s", num, 5
+                        + complemento.length(), complemento);
+            }
             
             outw.write(mensagem);
             outw.flush();
             
-            System.out.println("Sua mensagem:"+ mensagem); //implementar método pra exibir mensagens
-            
+           mainTabuleiro.exibirMensagem(TabuleiroJogo.mensagemOUT,TabuleiroJogo. 
+                   mensagemTCP, socket.getRemoteSocketAddress().toString(),
+                   socket.getPort(), mensagem);
+
             return true;
-        }catch(IOException ex){
-            System.out.println("Erro envio da mensagem:"+ mensagem); //implementar método pra exibir mensagens
+        } catch (IOException ex) {
+            mainTabuleiro.exibirMensagem(TabuleiroJogo.mensagemOUT,TabuleiroJogo.
+                    mensagemTCP, socket.getRemoteSocketAddress().toString(), 
+                    socket.getPort(), "Não foi possível enviar a mensagem:" +
+                            mensagem);
             return false;
-        }    
+        }
     }
 }
