@@ -11,6 +11,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.util.Random;
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
 
@@ -273,7 +274,7 @@ public class TabuleiroJogo extends javax.swing.JFrame {
         
     }
     
-    public void marcarPosicao (int jogadorEscolhido, int posicao){
+    public void marcarPosicao (int jogadorEscolhido, int posicao) throws IOException{
         
         int linha = (posicao - 1) /3;
         int coluna = (posicao - 1) %3;
@@ -302,10 +303,205 @@ public class TabuleiroJogo extends javax.swing.JFrame {
             case 8: label = pos8JLabel; break;
             case 9: label = pos9JLabel; break;
         }
-      
+        
+        label.setForeground(cor);
+        label.setText(Character.toString(marca));
+        
+        if (jogadorEscolhido == jogadorLocal)
+            conexaoTCP.enviarMensagemViaTCP(8,String.valueOf(posicao));
+        
+        int ganhador = jogadorVencedor();
+        
+        if (ganhador != SEM_GANHADOR){
+            resultadosPartidas[meuAtualJogo - 1] = ganhador % 10;
+            exibirResultadoPartida(ganhador);
+            novaPartida(ganhador);   
+        }
+        
+        if (jogadorEscolhido == jogadorLocal){
+            minhaVez = false;
+            statusJLabel.setText("Aguardando o jogador iniciar");
+        } else{
+            minhaVez = true;
+            statusJLabel.setText("Agora sua vez");
+        }
         
     }
-
+    
+     private int jogadorVencedor() {
+      for (int linha = 0; linha <3; linha++){
+          if ((jogoVelha[linha][0] == jogoVelha[linha][1]) &&
+                  (jogoVelha[linha][1] == jogoVelha[linha][2])
+                  && jogoVelha[linha][0] != simboloVazio){
+              int resultado = 0;
+              switch (linha){
+                  case 0: resultado = linha1; break;
+                  case 1: resultado = linha2; break;
+                  case 2: resultado = linha3; break;
+              }
+              return 10 * resultado + (jogoVelha[linha][0] == simboloLocal ?
+                      jogadorLocal : jogadorRemoto);
+          }
+      }
+      
+      for(int coluna =0; coluna <3; coluna++){
+         if ((jogoVelha[0][coluna] == jogoVelha[1][coluna]) &&
+                  (jogoVelha[1][coluna] == jogoVelha[2][coluna])
+                  && jogoVelha[0][coluna] != simboloVazio){
+             int resultado = 0;
+             switch(coluna){
+                 case 0: resultado = coluna1; break;
+                 case 1: resultado = coluna2; break;
+                 case 2: resultado = coluna3; break;
+             }
+             
+              return 10 * resultado +
+                       (jogoVelha[0][coluna] == simboloLocal ? jogadorLocal :
+                      jogadorRemoto);
+              
+         } 
+      }
+      
+      if ((jogoVelha[0][0] == jogoVelha[1][1]) &&
+              (jogoVelha[0][0] != simboloVazio) && (jogoVelha[1][1] == 
+              jogoVelha[2][2]))
+          return 10 * diagonalPrincipal +
+                       (jogoVelha[0][0] == simboloLocal ? jogadorLocal :
+                  jogadorRemoto);
+      
+      if((jogoVelha[0][2] != simboloVazio) &&
+           (jogoVelha[0][2] == jogoVelha[1][1]) &&
+           (jogoVelha[1][1] == jogoVelha[2][0]))
+                return 10 * diagonalSecundaria +
+                       (jogoVelha[0][2] == simboloLocal ? jogadorLocal : jogadorRemoto);
+      
+      return SEM_GANHADOR;
+    }
+     
+    private void exibirResultadoPartida(int ganhador) {
+       destacarPlacarTabuleiro(ganhador / 10);
+       exibirPlacar();
+       String mensagem = "";
+       
+       switch (ganhador % 10){
+           case jogadorLocalVenceu: 
+               mensagem = "Você é o ganhador!!";
+               break;
+           case jogadorRemotoVenceu:
+               mensagem = "Você não ganhou ! Não foi dessa fez";
+               break;
+           case empate:
+               mensagem = "A partida ficou empatado! ninguém ganhou";
+               break;
+       }
+       
+       if (meuAtualJogo == 5){
+           int remoto = Integer.parseInt(placarRemotoJLabel.getText());
+           int local = Integer.parseInt(placarLocalJLabel.getText());
+           
+           mensagem += "\n\n Placar final:" +
+                   "\n " + meuNome + ":" + local + 
+                   "\n" + apelidoRemoto + ":" + remoto +
+                   "\n\n";
+           if (local == remoto)
+               mensagem += "Você ganhou essa sensão, SHOW!!";
+           else
+               mensagem += apelidoRemoto + "Ganhou a sessão!";
+           
+           mensagem += "\n\nPara jogar novamente é necessário convidar jogador"
+                   + "novamente";    
+       }
+       
+       JOptionPane.showMessageDialog(this, mensagem, "A partida" + meuAtualJogo
+               + "de 5.", JOptionPane.INFORMATION_MESSAGE);
+    } 
+    
+     private void destacarPlacarTabuleiro(int posicaoVencedor) {
+       
+         boolean[][] destaca = {{false, false, false},
+                               {false, false, false},
+                               {false, false, false}};
+        
+        switch(posicaoVencedor)
+        {
+            case linha1:
+                destaca[0][0] = destaca[0][1] = destaca[0][2] = true;
+                break;
+            case linha2:
+                destaca[1][0] = destaca[1][1] = destaca[1][2] = true;
+                break;
+            case linha3:
+                destaca[2][0] = destaca[2][1] = destaca[2][2] = true;
+                break;
+            case coluna1:
+                destaca[0][0] = destaca[1][0] = destaca[2][0] = true;
+                break;
+            case coluna2:
+                destaca[0][1] = destaca[1][1] = destaca[2][1] = true;
+                break;
+            case coluna3:
+                destaca[0][2] = destaca[1][2] = destaca[2][2] = true;
+                break;
+            case diagonalPrincipal:
+                destaca[0][0] = destaca[1][1] = destaca[2][2] = true;
+                break;
+            case diagonalSecundaria:
+                destaca[0][2] = destaca[1][1] = destaca[2][0] = true;
+                break;
+        }
+        
+        int linha, coluna;
+        javax.swing.JLabel label = null;
+        for(int pos = 0; pos < 9; ++pos)
+        {
+            linha = pos / 3;
+            coluna = pos % 3;
+            switch(pos)
+            {
+                case 0: label = pos1JLabel; break;
+                case 1: label = pos2JLabel; break;
+                case 2: label = pos3JLabel; break;
+                case 3: label = pos4JLabel; break;
+                case 4: label = pos5JLabel; break;
+                case 5: label = pos6JLabel; break;
+                case 6: label = pos7JLabel; break;
+                case 7: label = pos8JLabel; break;
+                case 8: label = pos9JLabel; break;
+            }
+            
+            if (destaca[linha][coluna] == false)
+                label.setForeground(Color.BLUE);
+        }
+    }
+     
+    private void novaPartida(int ultimoGanhador) throws IOException {
+        limparTabuleiro();
+        
+        meuAtualJogo = meuAtualJogo + 1;
+        exibirPlacar();
+        
+        if (ultimoGanhador != jogadorLocal)
+        {
+            boolean enviaMensagem = true;
+            if(ultimoGanhador == empate)
+                enviaMensagem = !inicieiUltimoJogo;
+            
+            if (enviaMensagem)
+            {
+                conexaoTCP.enviarMensagemViaTCP(9, null);
+                
+                minhaVez = inicieiUltimoJogo = true;
+                statusJLabel.setText("Sua vez de jogar");
+            }
+        }
+        else
+        {
+            minhaVez = inicieiUltimoJogo = false;
+            statusJLabel.setText("Aguardando início da partida");
+            aguardandoInicioJogo = true;
+        } 
+    }
+ 
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

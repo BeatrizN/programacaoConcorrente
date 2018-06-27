@@ -86,12 +86,12 @@ public class CnxTCP extends SwingWorker<Boolean, String> {
                     switch (tamanhoTotalMsg) {
                         case 7:
                             if (posicao == 1 || posicao == 2) 
-                                mainTabuleiro.JogadorComecaJogando(posicao);
+                                mainTabuleiro.JogadorQueComecaJogando(posicao);
                             break;
                     
                         case 8:
                             if(posicao> 0 && posicao <10)
-                                //mainTabuleiro.nome do metodo que marca posição como parametro jogador remoto e posição;
+                                mainTabuleiro.marcarPosicao(mainTabuleiro.jogadorRemoto, posicao);
                             break;
                             
                         case 9:
