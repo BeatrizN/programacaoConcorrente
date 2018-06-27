@@ -31,6 +31,7 @@ public class TCP extends SwingWorker<Boolean, String> {
                     CnxTCP criaConexao = new CnxTCP(mainJogo, conexao); 
                     criaConexao.execute();
                     // Apresentar mensagem de conexao realizada com sucesso (caixa no mainJogo).
+                    mainJogo.conectou(criaConexao);                    
                     return true; 
                 } else {
                    conexao.close();                    
