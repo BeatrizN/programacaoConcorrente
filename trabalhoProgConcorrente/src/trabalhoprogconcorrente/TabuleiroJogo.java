@@ -959,7 +959,7 @@ public class TabuleiroJogo extends javax.swing.JFrame {
     
     
     
-        public void exibirMensagens(String tipo, String endereco, String conteudo) {
+    public void exibirMensagens(String tipo, String endereco, String conteudo) {
         
         DefaultTableModel msg;
         msg = (DefaultTableModel)tabelaMensagens.getModel();
@@ -969,4 +969,12 @@ public class TabuleiroJogo extends javax.swing.JFrame {
         //Bia não esqueça desse comentario para apagar se não for usado!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //tabelaMensagens.changeSelection(tabelaMensagens.getRowCount() -1, 0, false, false);
     }
+    
+     public void conectou (CnxTCP cnx) throws IOException {
+        aguardandoConexao = false;
+        this.conexaoTCP = cnx;
+        servidorTCP = null;
+        iniciarSessaoJogo();
+    }
+    
 }
