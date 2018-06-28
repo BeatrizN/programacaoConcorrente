@@ -114,10 +114,10 @@ public class TabuleiroJogo extends javax.swing.JFrame {
      */
     public TabuleiroJogo() {
         initComponents();
-        
+
         this.setTitle("Jogo da Velha");
         this.setLocationRelativeTo(null);
-        
+
         isJogandoEmUmaPartida = isConectado = false;
         servidorTCP = null;
         conexaoTCP = null;
@@ -138,34 +138,34 @@ public class TabuleiroJogo extends javax.swing.JFrame {
             finalizaJogo();
             return;
         }
-        
+
         jogadores = new DefaultListModel<>();
-        jList1.setModel(jogadores); ////////////////////////////////////////////************************
-        jList1.setCellRenderer(new Renderizacao()); ////////////////////////////////////////****************************
+        jList1.setModel(jogadores);
+        jList1.setCellRenderer(new Renderizacao());
 
         try {
             Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
             for (NetworkInterface netint : Collections.list(nets)) {
-                if (netint.isVirtual() || netint.isLoopback()){
+                if (netint.isVirtual() || netint.isLoopback()) {
                     continue;
                 }
 
                 Enumeration<InetAddress> inetAddresses = netint.getInetAddresses();
-                if(inetAddresses.hasMoreElements()) {
+                if (inetAddresses.hasMoreElements()) {
                     for (InetAddress inetAddress : Collections.list(inetAddresses)) {
-                        if ((inetAddress instanceof Inet4Address) &&
-                            inetAddress.isSiteLocalAddress()) {
-                            jComboBox1.addItem(inetAddress.getHostAddress() +
-                                    "  " + netint.getDisplayName());
+                        if ((inetAddress instanceof Inet4Address)
+                                && inetAddress.isSiteLocalAddress()) {
+                            jComboBox1.addItem(inetAddress.getHostAddress()
+                                    + "  " + netint.getDisplayName());
                         }
                     }
                 }
             }
-        }catch(SocketException ex) {
+        } catch (SocketException ex) {
         }
-        
+
         ActionListener quemEstaOnlinePerformer = (ActionEvent evt) -> {
-            for(int i = 0; i < jogadores.getSize(); ++i) {
+            for (int i = 0; i < jogadores.getSize(); ++i) {
                 jogadores.get(i).setIsOnLine(false);
             }
 
@@ -173,16 +173,16 @@ public class TabuleiroJogo extends javax.swing.JFrame {
             timeoutJogadorOnline.start();
         };
         JogadorOnlineEmIntervalo = new Timer(200000, quemEstaOnlinePerformer);
-        JogadorOnlineEmIntervalo.setRepeats(true);  
+        JogadorOnlineEmIntervalo.setRepeats(true);
 
         ActionListener timeoutQuemEstaOnlinePerformer = (ActionEvent evt) -> {
             atualizaListaOnLines();
         };
         timeoutJogadorOnline = new Timer(17000, timeoutQuemEstaOnlinePerformer);
-        timeoutJogadorOnline.setRepeats(false);   
+        timeoutJogadorOnline.setRepeats(false);
 
         ActionListener timeoutAguardandoJogadorRemotoPerformer = (ActionEvent evt) -> {
-            if(aguardandoRespostaConvite) {
+            if (aguardandoRespostaConvite) {
                 cancelaConviteDeJogo(true);
             } else {
                 try {
@@ -190,9 +190,9 @@ public class TabuleiroJogo extends javax.swing.JFrame {
                 } catch (IOException ex) {
                     Logger.getLogger(TabuleiroJogo.class.getName()).log(Level.SEVERE, null, ex);
                 }
-		}
+            }
         };
-        
+
         timeoutAguardandoOutroJogador = new Timer(30000, timeoutAguardandoJogadorRemotoPerformer);
         timeoutAguardandoOutroJogador.setRepeats(false);
 
@@ -204,19 +204,19 @@ public class TabuleiroJogo extends javax.swing.JFrame {
             timeoutAguardandoOutroJogador.stop();
         }
 
-        jogadorRemotoJLabel.setText(nomeRemoto + "/" + simboloRemoto);
-        jogadorRemotoJLabel.setEnabled(true);
+        jLabel9.setText(nomeRemoto + "/" + simboloRemoto);
+        jLabel9.setEnabled(true);
 
         if (fuiConvidado) {
             int aux = aleatorio.nextInt(2) + 1;
             if (aux == jogadorLocal) {
                 inicieiUltimoJogo = true;
                 minhaVez = inicieiUltimoJogo;
-                statusJLabel.setText("Agora é sua vez");
+                jLabel6.setText("Agora é sua vez");
             } else {
                 inicieiUltimoJogo = false;
                 minhaVez = inicieiUltimoJogo;
-                statusJLabel.setText("Aguardando o jogador jogar");
+                jLabel6.setText("Aguardando o jogador jogar");
             }
 
             String complemento = String.valueOf(aux);
@@ -229,9 +229,9 @@ public class TabuleiroJogo extends javax.swing.JFrame {
 
         limparTabuleiro();
 
-        placarRemotoJLabel.setEnabled(true);
-        placarLocalJLabel.setEnabled(true);
-        
+        jLabel10.setEnabled(true);
+        jLabel8.setEnabled(true);
+
     }
 
     public void zerarPlacar() {
@@ -246,8 +246,8 @@ public class TabuleiroJogo extends javax.swing.JFrame {
             corTabuleiro = Color.BLUE;
         }
 
-        jogadorRemotoJLabel.setText(nomeRemoto);
-        posicoesJPanel.setBackground(corTabuleiro);
+        jLabel9.setText(nomeRemoto);
+        jPanel1.setBackground(corTabuleiro);
 
         for (int i = 0; i < 5; i++) {
             resultadosPartidas[i] = resultadoVazio;
@@ -263,40 +263,40 @@ public class TabuleiroJogo extends javax.swing.JFrame {
 
                 switch (posicao) {
                     case 0:
-                        pos1JLabel.setText("");
+                        jButton1.setText("");
                         break;
                     case 1:
-                        pos2JLabel.setText("");
+                        jButton2.setText("");
                         break;
                     case 2:
-                        pos3JLabel.setText("");
+                        jButton3.setText("");
                         break;
                     case 3:
-                        pos4JLabel.setText("");
+                        jButton4.setText("");
                         break;
                     case 4:
-                        pos5JLabel.setText("");
+                        jButton5.setText("");
                         break;
                     case 5:
-                        pos6JLabel.setText("");
+                        jButton6.setText("");
                         break;
                     case 6:
-                        pos7JLabel.setText("");
+                        jButton7.setText("");
                         break;
                     case 7:
-                        pos8JLabel.setText("");
+                        jButton8.setText("");
                         break;
                     case 8:
-                        pos9JLabel.setText("");
+                        jButton9.setText("");
                         break;
                 }
                 posicao = posicao + 1;
             }
         }
 
-        jogadorRemotoJLabel.setEnabled(isJogandoEmUmaPartida);
-        placarRemotoJLabel.setEnabled(isJogandoEmUmaPartida);
-        placarLocalJLabel.setEnabled(isJogandoEmUmaPartida);
+        jLabel9.setEnabled(isJogandoEmUmaPartida);
+        jLabel10.setEnabled(isJogandoEmUmaPartida);
+        jLabel8.setEnabled(isJogandoEmUmaPartida);
     }
 
     public void exibirPlacar() {
@@ -306,7 +306,7 @@ public class TabuleiroJogo extends javax.swing.JFrame {
         javax.swing.JLabel label = null;
 
         for (int i = 0; i < 5; i++) {
-            switch (i) {
+            /*     switch (i) {
                 case 0:
                     label = jogo1JLabel;
                     break;
@@ -322,7 +322,7 @@ public class TabuleiroJogo extends javax.swing.JFrame {
                 case 4:
                     label = jogo5JLabel;
                     break;
-            }
+            }*/
 
             cor = Color.DARK_GRAY;
             if (isJogandoEmUmaPartida) {
@@ -353,8 +353,8 @@ public class TabuleiroJogo extends javax.swing.JFrame {
             label.setForeground(cor);
         }
 
-        placarLocalJLabel.setText(String.valueOf(local));
-        placarRemotoJLabel.setText(String.valueOf(remoto));
+        jLabel8.setText(String.valueOf(local));
+        jLabel10.setText(String.valueOf(remoto));
     }
 
     public void limparTabuleiro() {
@@ -366,36 +366,38 @@ public class TabuleiroJogo extends javax.swing.JFrame {
 
                 switch (posicao) {
                     case 0:
-                        pos1JLabel.setText("");
+                        jButton1.setText("");
                         break;
                     case 1:
-                        pos2JLabel.setText("");
+                        jButton2.setText("");
                         break;
                     case 2:
-                        pos3JLabel.setText("");
+                        jButton3.setText("");
                         break;
                     case 3:
-                        pos4JLabel.setText("");
+                        jButton4.setText("");
                         break;
                     case 4:
-                        pos5JLabel.setText("");
+                        jButton5.setText("");
                         break;
                     case 5:
-                        pos6JLabel.setText("");
+                        jButton6.setText("");
                         break;
                     case 6:
-                        pos7JLabel.setText("");
+                        jButton7.setText("");
                         break;
                     case 7:
-                        pos8JLabel.setText("");
+                        jButton8.setText("");
                         break;
                     case 8:
-                        pos9JLabel.setText("");
+                        jButton9.setText("");
                         break;
                 }
                 posicao = posicao + 1;
             }
         }
+        jLabel6.setText("");
+        jButton2.setText("oii");
     }
 
     public void JogadorQueComecaJogando(int jogador) throws IOException {
@@ -406,9 +408,9 @@ public class TabuleiroJogo extends javax.swing.JFrame {
 
         if (jogador == 1) {
             minhaVez = inicieiUltimoJogo;
-            statusJLabel.setText("Aguardando jogador começar");
+            jLabel6.setText("Aguardando jogador começar");
         } else {
-            statusJLabel.setText("Sua vez de jogar");
+            jLabel6.setText("Sua vez de jogar");
         }
 
     }
@@ -429,40 +431,40 @@ public class TabuleiroJogo extends javax.swing.JFrame {
         }
 
         jogoVelha[linha][coluna] = marca;
-        javax.swing.JLabel label = null;
+        javax.swing.JButton botao = null;
 
         switch (posicao) {
             case 1:
-                label = pos1JLabel;
+                botao = jButton1;
                 break;
             case 2:
-                label = pos2JLabel;
+                botao = jButton2;
                 break;
             case 3:
-                label = pos3JLabel;
+                botao = jButton3;
                 break;
             case 4:
-                label = pos4JLabel;
+                botao = jButton4;
                 break;
             case 5:
-                label = pos5JLabel;
+                botao = jButton5;
                 break;
             case 6:
-                label = pos6JLabel;
+                botao = jButton6;
                 break;
             case 7:
-                label = pos7JLabel;
+                botao = jButton7;
                 break;
             case 8:
-                label = pos8JLabel;
+                botao = jButton8;
                 break;
             case 9:
-                label = pos9JLabel;
+                botao = jButton9;
                 break;
         }
 
-        label.setForeground(cor);
-        label.setText(Character.toString(marca));
+        botao.setForeground(cor);
+        botao.setText(Character.toString(marca));
 
         if (jogadorEscolhido == jogadorLocal) {
             conexaoTCP.enviarMensagemViaTCP(8, String.valueOf(posicao));
@@ -478,10 +480,10 @@ public class TabuleiroJogo extends javax.swing.JFrame {
 
         if (jogadorEscolhido == jogadorLocal) {
             minhaVez = false;
-            statusJLabel.setText("Aguardando o jogador iniciar");
+            jLabel6.setText("Aguardando o jogador iniciar");
         } else {
             minhaVez = true;
-            statusJLabel.setText("Agora sua vez");
+            jLabel6.setText("Agora sua vez");
         }
 
     }
@@ -568,8 +570,8 @@ public class TabuleiroJogo extends javax.swing.JFrame {
         }
 
         if (meuAtualJogo == 5) {
-            int remoto = Integer.parseInt(placarRemotoJLabel.getText());
-            int local = Integer.parseInt(placarLocalJLabel.getText());
+            int remoto = Integer.parseInt(jLabel10.getText());
+            int local = Integer.parseInt(jLabel8.getText());
 
             mensagem += "\n\n Placar final:"
                     + "\n " + meuNome + ":" + local
@@ -623,42 +625,42 @@ public class TabuleiroJogo extends javax.swing.JFrame {
         }
 
         int linha, coluna;
-        javax.swing.JLabel label = null;
+        javax.swing.JButton botao = null;
         for (int pos = 0; pos < 9; ++pos) {
             linha = pos / 3;
             coluna = pos % 3;
             switch (pos) {
                 case 0:
-                    label = pos1JLabel;
+                    botao = jButton1;
                     break;
                 case 1:
-                    label = pos2JLabel;
+                    botao = jButton2;
                     break;
                 case 2:
-                    label = pos3JLabel;
+                    botao = jButton3;
                     break;
                 case 3:
-                    label = pos4JLabel;
+                    botao = jButton4;
                     break;
                 case 4:
-                    label = pos5JLabel;
+                    botao = jButton5;
                     break;
                 case 5:
-                    label = pos6JLabel;
+                    botao = jButton6;
                     break;
                 case 6:
-                    label = pos7JLabel;
+                    botao = jButton7;
                     break;
                 case 7:
-                    label = pos8JLabel;
+                    botao = jButton8;
                     break;
                 case 8:
-                    label = pos9JLabel;
+                    botao = jButton9;
                     break;
             }
 
             if (destaca[linha][coluna] == false) {
-                label.setForeground(Color.BLUE);
+                botao.setForeground(Color.BLUE);
             }
         }
     }
@@ -679,18 +681,18 @@ public class TabuleiroJogo extends javax.swing.JFrame {
                 conexaoTCP.enviarMensagemViaTCP(9, null);
 
                 minhaVez = inicieiUltimoJogo = true;
-                statusJLabel.setText("Sua vez de jogar"); /////////////////////////////////////////////////////////////
+                jLabel6.setText("Sua vez de jogar"); /////////////////////////////////////////////////////////////
             }
         } else {
             minhaVez = inicieiUltimoJogo = false;
-            statusJLabel.setText("Aguardando início da partida"); ///////////////////////////////////////////////
+            jLabel6.setText("Aguardando início da partida"); ///////////////////////////////////////////////
             aguardandoInicioJogo = true;
         }
     }
 
     public void jogadorRemotocomecaJogando() {
         aguardandoInicioJogo = false;
-        statusJLabel.setText("Aguardando o jogador");
+        jLabel6.setText("Aguardando o jogador");
     }
 
     public void finalizarConexaoViaTCP(int desistencia) throws IOException {
@@ -760,9 +762,9 @@ public class TabuleiroJogo extends javax.swing.JFrame {
         aguardandoJogadorRemoto = false;
         aguardandoConfirmacao = aguardandoJogadorRemoto;
 
-        posicoesJPanel.setBackground(Color.BLUE);
+        jPanel1.setBackground(Color.BLUE);
 
-        statusJLabel.setText("");
+        jLabel6.setText("");
 
         exibirMensagens(mensagemINF, addrRemoto, "Conexão foi encerrada");
         exibirMensagens(mensagemINF, "", "O jogo acabou"
@@ -788,6 +790,11 @@ public class TabuleiroJogo extends javax.swing.JFrame {
         jButton8 = new javax.swing.JButton();
         jButton9 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jButton11 = new javax.swing.JButton();
@@ -814,6 +821,12 @@ public class TabuleiroJogo extends javax.swing.JFrame {
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
+            }
+        });
+
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
             }
         });
 
@@ -859,13 +872,23 @@ public class TabuleiroJogo extends javax.swing.JFrame {
             }
         });
 
+        jLabel6.setText("jLabel6");
+
+        jLabel7.setText("jLabel7");
+
+        jLabel8.setText("jLabel8");
+
+        jLabel9.setText("jLabel9");
+
+        jLabel10.setText("jLabel10");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jButton4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -883,7 +906,16 @@ public class TabuleiroJogo extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButton8)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton9)))
+                        .addComponent(jButton9))
+                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
+                            .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, 54, Short.MAX_VALUE))))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
 
@@ -892,7 +924,9 @@ public class TabuleiroJogo extends javax.swing.JFrame {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(22, 22, 22)
+                .addContainerGap()
+                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(26, 26, 26)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jButton8)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -912,7 +946,15 @@ public class TabuleiroJogo extends javax.swing.JFrame {
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButton9)))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(jLabel8))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(jLabel10))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
 
         jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButton1, jButton2, jButton3, jButton4, jButton5, jButton6, jButton7, jButton8, jButton9});
@@ -1069,10 +1111,10 @@ public class TabuleiroJogo extends javax.swing.JFrame {
             }
         });
 
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
+        jList1.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jList1PropertyChange(evt);
+            }
         });
         jScrollPane3.setViewportView(jList1);
 
@@ -1087,14 +1129,18 @@ public class TabuleiroJogo extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel3)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(35, 35, 35)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(16, 16, 16)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(painelMensagens, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addGap(0, 5, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
@@ -1108,15 +1154,11 @@ public class TabuleiroJogo extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(jButton10)))
                         .addGap(18, 18, 18))))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(287, 287, 287)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(48, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel3)
@@ -1131,12 +1173,14 @@ public class TabuleiroJogo extends javax.swing.JFrame {
                             .addComponent(jLabel5)
                             .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(painelMensagens, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(painelMensagens, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(110, 110, 110))
         );
 
@@ -1144,31 +1188,59 @@ public class TabuleiroJogo extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
+        try {
+            escolheCampo(3);
+        } catch (IOException ex) {
+            Logger.getLogger(TabuleiroJogo.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        try {
+            escolheCampo(1);
+        } catch (IOException ex) {
+            Logger.getLogger(TabuleiroJogo.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        // TODO add your handling code here:
+        try {
+            escolheCampo(5);
+        } catch (IOException ex) {
+            Logger.getLogger(TabuleiroJogo.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        // TODO add your handling code here:
+        try {
+            escolheCampo(8);
+        } catch (IOException ex) {
+            Logger.getLogger(TabuleiroJogo.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        // TODO add your handling code here:
+        try {
+            escolheCampo(9);
+        } catch (IOException ex) {
+            Logger.getLogger(TabuleiroJogo.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        // TODO add your handling code here:
+        try {
+            escolheCampo(7);
+        } catch (IOException ex) {
+            Logger.getLogger(TabuleiroJogo.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
+        try {
+            escolheCampo(4);
+        } catch (IOException ex) {
+            Logger.getLogger(TabuleiroJogo.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
@@ -1180,7 +1252,7 @@ public class TabuleiroJogo extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton11ActionPerformed
 
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
-        // TODO add your handling code here:
+        finalizaJogo();
     }//GEN-LAST:event_jButton12ActionPerformed
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
@@ -1188,8 +1260,25 @@ public class TabuleiroJogo extends javax.swing.JFrame {
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        // TODO add your handling code here:
+        try {
+            escolheCampo(6);
+        } catch (IOException ex) {
+            Logger.getLogger(TabuleiroJogo.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jList1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jList1PropertyChange
+        int idx = jList1.getSelectedIndex();
+        jButton11.setEnabled(idx >= 0);
+    }//GEN-LAST:event_jList1PropertyChange
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        try {
+            escolheCampo(2);
+        } catch (IOException ex) {
+            Logger.getLogger(TabuleiroJogo.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1198,7 +1287,7 @@ public class TabuleiroJogo extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -1241,11 +1330,16 @@ public class TabuleiroJogo extends javax.swing.JFrame {
     private javax.swing.JButton jButton9;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JList<String> jList1;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JList<OnLine> jList1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
@@ -1256,34 +1350,14 @@ public class TabuleiroJogo extends javax.swing.JFrame {
     private javax.swing.JPanel painelMensagens;
     private javax.swing.JTable tabelaMensagens;
     // End of variables declaration//GEN-END:variables
-  
-    
 
-    
-    
-    /*
-    
-    private javax.swing.JLabel statusJLabel;
-    private javax.swing.JLabel jogadorRemotoJLabel;
-    private javax.swing.JLabel placarLocalJLabel;
-    private javax.swing.JLabel placarRemotoJLabel;
-    private javax.swing.JPanel posicoesJPanel;
-    private javax.swing.JLabel pos1JLabel;
-    private javax.swing.JLabel pos2JLabel;
-    private javax.swing.JLabel pos3JLabel;
-    private javax.swing.JLabel pos4JLabel;
-    private javax.swing.JLabel pos5JLabel;
-    private javax.swing.JLabel pos6JLabel;
-    private javax.swing.JLabel pos7JLabel;
-    private javax.swing.JLabel pos8JLabel;
-    private javax.swing.JLabel pos9JLabel;
-    private javax.swing.JTable mensagensJTable;
-    private javax.swing.JLabel jogo1JLabel;
-    private javax.swing.JLabel jogo2JLabel;
-    private javax.swing.JLabel jogo3JLabel;
-    private javax.swing.JLabel jogo4JLabel;
-    private javax.swing.JLabel jogo5JLabel;
-*/
+    private void escolheCampo(int posissao) throws IOException {
+        // verifica se existe jogo em andamento e é vez do jogador corrente
+        if (isJogandoEmUmaPartida == true && minhaVez == true) {
+            marcarPosicao(jogadorLocal, posissao);
+        }
+    }
+
     public void exibirMensagens(String tipo, String endereco, String conteudo) {
 
         DefaultTableModel msg;
@@ -1292,9 +1366,9 @@ public class TabuleiroJogo extends javax.swing.JFrame {
         msg.addRow(new String[]{tipo, endereco, conteudo});
 
         //Bia não esqueça desse comentario para apagar se não for usado!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        tabelaMensagens.changeSelection(tabelaMensagens.getRowCount() -1, 0, false, false);
+        tabelaMensagens.changeSelection(tabelaMensagens.getRowCount() - 1, 0, false, false);
     }
-    
+
     public void conectou(CnxTCP cnx) throws IOException {
         aguardandoConexao = false;
         this.conexaoTCP = cnx;
@@ -1373,14 +1447,14 @@ public class TabuleiroJogo extends javax.swing.JFrame {
             }
         }
     }
-    
+
     public void removeJogadorOnline(String nome) throws IOException {
-        if(isJogandoEmUmaPartida && (isNomeIgual(nome, nomeRemoto))) { //(nome.compareToIgnoreCase(apelidoRemoto) == 0))
+        if (isJogandoEmUmaPartida && (isNomeIgual(nome, nomeRemoto))) { //(nome.compareToIgnoreCase(apelidoRemoto) == 0))
             finalizarConexaoViaTCP(JOGADOR_DESISTIU);
         }
-        
-        for(int i = 0; i < jogadores.size(); ++i) {
-            if(isNomeIgual(nome, jogadores.get(i).getNome())) {
+
+        for (int i = 0; i < jogadores.size(); ++i) {
+            if (isNomeIgual(nome, jogadores.get(i).getNome())) {
                 jogadores.remove(i);
                 return;
             }
@@ -1389,30 +1463,30 @@ public class TabuleiroJogo extends javax.swing.JFrame {
 
     public void fuiConvidado(String nome, InetAddress enderecoIP) {
         String mensagem;
-        if(isJogandoEmUmaPartida) {
+        if (isJogandoEmUmaPartida) {
             exibirMensagens(mensagemINF, enderecoIP.getHostAddress(),
                     "Convite recusado automaticamente");
             mensagem = nome + "|0";
             enviarUDP(enderecoIP, 5, mensagem);
-            
+
             return;
         }
 
         fuiConvidado = true;
-        statusJLabel.setText(""); ///////////////////////////////////////////////////////////////////////////////////////////////////
+        jLabel6.setText("");
         addrJogadorRemoto = null;
-        
+
         mensagem = "O jogador " + nome + " está te convidando para um jogo\nAceita?";
         int resp = JOptionPane.showConfirmDialog(this, mensagem, "Convite para jogar",
-                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-        
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
         if (resp == JOptionPane.NO_OPTION) {
             mensagem = meuNome + "|0";
             enviarUDP(enderecoIP, 5, mensagem);
             exibirMensagens(mensagemINF, "", "Convite não foi aceito");
             return;
         }
-        
+
         servidorTCP = socketTCPiniciando();
         if (servidorTCP == null) {
             JOptionPane.showMessageDialog(null,
@@ -1421,29 +1495,29 @@ public class TabuleiroJogo extends javax.swing.JFrame {
                     JOptionPane.ERROR_MESSAGE);
             mensagem = meuNome + "|0";
             enviarUDP(enderecoIP, 5, mensagem);
-            statusJLabel.setText(""); ////////////////////////////////////////////////////////////////////////////////////////
+            jLabel6.setText("");
 
             return;
         }
-        
+
         addrJogadorRemoto = enderecoIP;
         nomeRemoto = nome;
         tcpEscutaThread = new TCP(this, servidorTCP, enderecoIP);
         tcpEscutaThread.execute();
-            
+
         mensagem = meuNome + "|" + servidorTCP.getLocalPort();
         enviarUDP(enderecoIP, 5, mensagem);
-        
+
         aguardandoConexao = true;
         aguardandoConfirmacao = true;
         aguardandoInicioJogo = true;
-        statusJLabel.setText("Aguardando Conexão"); //////////////////////////////////////////////////////////////////////////////////////
+        jLabel6.setText("Aguardando Conexão");
         timeoutAguardandoOutroJogador.start();
     }
-    
+
     private ServerSocket socketTCPiniciando() {
         InetAddress enderecoInterface = encontraInterface();
-        if(enderecoInterface == null) {
+        if (enderecoInterface == null) {
             return null;
         }
         ServerSocket socket;
@@ -1453,52 +1527,53 @@ public class TabuleiroJogo extends javax.swing.JFrame {
         } catch (IOException e) {
             return null;
         }
-     
+
         return socket;
     }
-    
+
     private InetAddress encontraInterface() {
         int x = jComboBox1.getSelectedIndex();
-        if(x < 0) {
+        if (x < 0) {
             return null;
         }
         InetAddress endereco;
         String auxiliar = jComboBox1.getItemAt(x);
         String[] espacamento = auxiliar.split("  ");
-        
+
         try {
             endereco = InetAddress.getByName(espacamento[0]);
         } catch (UnknownHostException ex) {
             return null;
         }
-        
+
         return endereco;
     }
-    
-        public void responderJogador(String mensagem, InetAddress enderecoIP) {
+
+    public void responderJogador(String mensagem, InetAddress enderecoIP) {
         // formato da resposta: Apelido|porta
-        String[] strPartes= mensagem.split("\\|");
-        if(strPartes.length != 2)
-            return;
-        
-        // estou esperando uma resposta?
-        if(aguardandoRespostaConvite == false) {
+        String[] strPartes = mensagem.split("\\|");
+        if (strPartes.length != 2) {
             return;
         }
-        
+
+        // estou esperando uma resposta?
+        if (aguardandoRespostaConvite == false) {
+            return;
+        }
+
         // verifica se quem respondeu foi realmente o jogador remoto
-        if ((enderecoIP.equals(addrJogadorRemoto) == false) ||
-            nomeRemoto.compareToIgnoreCase(strPartes[0]) != 0) {
-                return;
+        if ((enderecoIP.equals(addrJogadorRemoto) == false)
+                || nomeRemoto.compareToIgnoreCase(strPartes[0]) != 0) {
+            return;
         }
         // cancela espera da resposta ao convite
         aguardandoRespostaConvite = false;
-        if(timeoutAguardandoOutroJogador.isRunning()) {
+        if (timeoutAguardandoOutroJogador.isRunning()) {
             timeoutAguardandoOutroJogador.stop();
         }
-        
+
         int porta = Integer.parseInt(strPartes[1]);
-        if(porta == 0) {
+        if (porta == 0) {
             cancelaConviteDeJogo(false);
             return;
         }
@@ -1509,47 +1584,47 @@ public class TabuleiroJogo extends javax.swing.JFrame {
             conexaoTCP = new CnxTCP(this, socket);
             conexaoTCP.execute();
             aguardandoInicioJogo = true;
-            statusJLabel.setText("Aguardando Início"); ///////////////////////////////////////////////////////////////////////////////////////
-        } catch(IOException ex) {
+            jLabel6.setText("Aguardando Início");
+        } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, "Erro ao criar conexão " + ex.getMessage(),
                     "Conectar com outro jogador", JOptionPane.INFORMATION_MESSAGE);
         }
     }
-        
+
     private void cancelaConviteDeJogo(boolean timeout) {
         aguardandoRespostaConvite = false;
-        statusJLabel.setText("");//////////////////////////////////////////////////////////////////////////////////////****************************************
-        
+        jLabel6.setText("");
+
         String mensagem;
-        if(timeout) {
+        if (timeout) {
             mensagem = "Timeout: " + nomeRemoto + " não respondeu.";
         } else {
             mensagem = nomeRemoto + " recusou o convite.";
-        JOptionPane.showMessageDialog(this, mensagem, "Convite para jogar",
-                                      JOptionPane.INFORMATION_MESSAGE);//////////////////////////////////////////////////////////////////////*******************
+            JOptionPane.showMessageDialog(this, mensagem, "Convite para jogar",
+                    JOptionPane.INFORMATION_MESSAGE);//////////////////////////////////////////////////////////////////////*******************
         }
     }
-    
+
     public void jogadorConfirmouParticipacao(InetAddress addr) throws IOException {
         if (addr.equals(addrJogadorRemoto) == false) {
             return;
-	}
+        }
         aguardandoConfirmacao = false;
         iniciarSessaoJogo();
     }
-    
+
     private void finalizaJogo() {
         enviarUDP(addrBroadcast, 3, meuNome, true);
         Container frame = jButton12.getParent();
         do {
-            frame = frame.getParent(); 
-        }while (!(frame instanceof JFrame));  
-        ((JFrame)frame).dispose();
-    }  
-    
+            frame = frame.getParent();
+        } while (!(frame instanceof JFrame));
+        ((JFrame) frame).dispose();
+    }
+
     public void atualizaListaOnLines() {
-        for(int i = 0; i < jogadores.size(); ++i) {
-            if(jogadores.get(i).isIsOnLine() == false) {
+        for (int i = 0; i < jogadores.size(); ++i) {
+            if (jogadores.get(i).isIsOnLine() == false) {
                 jogadores.remove(i);
             }
         }
