@@ -79,10 +79,10 @@ public class UDP extends SwingWorker<Void, String> {
                         mainJogo.fuiConvidado(conteudoMensagem, pacote.getAddress());
                         break;   
                     case 5:
-                        //
+                        mainJogo.responderJogador(conteudoMensagem, pacote.getAddress());
                         break;
                     case 6:
-                        //
+                        mainJogo.jogadorConfirmouParticipacao(pacote.getAddress());
                         break;   
                     default:
                         mainJogo.exibirMensagens(mainJogo.mensagemIN, pacote.getAddress().

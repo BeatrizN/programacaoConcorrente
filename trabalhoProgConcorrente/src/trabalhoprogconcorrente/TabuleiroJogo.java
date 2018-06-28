@@ -1,16 +1,26 @@
 package trabalhoprogconcorrente;
 
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
@@ -88,9 +98,9 @@ public class TabuleiroJogo extends javax.swing.JFrame {
     private InetAddress addrBroadcast;         // endereço para broadcasting
     private InetAddress addrJogadorRemoto;     // endereço do jogador remoto
     private String nomeRemoto;              // apelido do jogador remoto
-    private Timer TempoJogadorOnline;         // temporizador para saber quem está online
-    private Timer timeoutJogadorOnlineTimer;  // temporizador de timeout
-    private Timer timeoutEsperandoJogadorRemoto;    // temporizador de timeout
+    private Timer JogadorOnlineEmIntervalo;         // temporizador para saber quem está online
+    private Timer timeoutJogadorOnline;  // temporizador de timeout
+    private Timer timeoutAguardandoOutroJogador;    // temporizador de timeout
 
     // status do programa
     private boolean aguardandoConexao;
@@ -105,13 +115,93 @@ public class TabuleiroJogo extends javax.swing.JFrame {
     public TabuleiroJogo() {
         initComponents();
         
+        this.setTitle("Jogo da Velha");
+        this.setLocationRelativeTo(null);
+        
+        isJogandoEmUmaPartida = isConectado = false;
+        servidorTCP = null;
+        conexaoTCP = null;
+        udpEscutaThread = null;
+        tcpEscutaThread = null;
+        addrLocal = null;
+        aguardandoConexao = aguardandoInicioJogo = false;
+        aguardandoConfirmacao = aguardandoJogadorRemoto = false;
+        aguardandoRespostaConvite = false;
+
+        try {
+            addrBroadcast = InetAddress.getByName("255.255.255.255");
+        } catch (UnknownHostException ex) {
+            JOptionPane.showMessageDialog(null,
+                    "Não foi possível criar endereço para broadcasting.",
+                    "Finalizando o programa",
+                    JOptionPane.ERROR_MESSAGE);
+            finalizaJogo();
+            return;
+        }
+        
+        jogadores = new DefaultListModel<>();
+        jogadoresJList.setModel(jogadores); ////////////////////////////////////////////************************
+        jogadoresJList.setCellRenderer(new Renderizacao()); ////////////////////////////////////////****************************
+
+        try {
+            Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
+            for (NetworkInterface netint : Collections.list(nets)) {
+                if (netint.isVirtual() || netint.isLoopback()){
+                    continue;
+                }
+
+                Enumeration<InetAddress> inetAddresses = netint.getInetAddresses();
+                if(inetAddresses.hasMoreElements()) {
+                    for (InetAddress inetAddress : Collections.list(inetAddresses)) {
+                        if ((inetAddress instanceof Inet4Address) &&
+                            inetAddress.isSiteLocalAddress()) {
+                            jComboBox1.addItem(inetAddress.getHostAddress() +
+                                    "  " + netint.getDisplayName());
+                        }
+                    }
+                }
+            }
+        }catch(SocketException ex) {
+        }
+        
+        ActionListener quemEstaOnlinePerformer = (ActionEvent evt) -> {
+            for(int i = 0; i < jogadores.getSize(); ++i) {
+                jogadores.get(i).setIsOnLine(false);
+            }
+
+            enviarUDP(addrBroadcast, 1, meuNome);
+            timeoutJogadorOnline.start();
+        };
+        JogadorOnlineEmIntervalo = new Timer(200000, quemEstaOnlinePerformer);
+        JogadorOnlineEmIntervalo.setRepeats(true);  
+
+        ActionListener timeoutQuemEstaOnlinePerformer = (ActionEvent evt) -> {
+            atualizaListaOnLines();
+        };
+        timeoutJogadorOnline = new Timer(17000, timeoutQuemEstaOnlinePerformer);
+        timeoutJogadorOnline.setRepeats(false);   
+
+        ActionListener timeoutAguardandoJogadorRemotoPerformer = (ActionEvent evt) -> {
+            if(aguardandoRespostaConvite) {
+                cancelaConviteDeJogo(true);
+            } else {
+                try {
+                    finalizarConexaoViaTCP(CONEXAO_TIMEOUT);
+                } catch (IOException ex) {
+                    Logger.getLogger(TabuleiroJogo.class.getName()).log(Level.SEVERE, null, ex);
+                }
+		}
+        };
+        
+        timeoutAguardandoOutroJogador = new Timer(30000, timeoutAguardandoJogadorRemotoPerformer);
+        timeoutAguardandoOutroJogador.setRepeats(false);
 
     }
 
     public void iniciarSessaoJogo() throws IOException {
 
-        if (timeoutEsperandoJogadorRemoto.isRunning()) {
-            timeoutEsperandoJogadorRemoto.stop();
+        if (timeoutAguardandoOutroJogador.isRunning()) {
+            timeoutAguardandoOutroJogador.stop();
         }
 
         jogadorRemotoJLabel.setText(nomeRemoto + "/" + simboloRemoto);
@@ -1307,7 +1397,7 @@ public class TabuleiroJogo extends javax.swing.JFrame {
         aguardandoConfirmacao = true;
         aguardandoInicioJogo = true;
         statusJLabel.setText("Aguardando Conexão");
-        //timeoutAguardandoJogadorRemoto.start();
+        timeoutAguardandoOutroJogador.start();
     }
     
     private ServerSocket socketTCPiniciando() {
@@ -1344,4 +1434,83 @@ public class TabuleiroJogo extends javax.swing.JFrame {
         return endereco;
     }
     
+        public void responderJogador(String mensagem, InetAddress enderecoIP) {
+        // formato da resposta: Apelido|porta
+        String[] strPartes= mensagem.split("\\|");
+        if(strPartes.length != 2)
+            return;
+        
+        // estou esperando uma resposta?
+        if(aguardandoRespostaConvite == false) {
+            return;
+        }
+        
+        // verifica se quem respondeu foi realmente o jogador remoto
+        if ((enderecoIP.equals(addrJogadorRemoto) == false) ||
+            nomeRemoto.compareToIgnoreCase(strPartes[0]) != 0) {
+                return;
+        }
+        // cancela espera da resposta ao convite
+        aguardandoRespostaConvite = false;
+        if(timeoutAguardandoOutroJogador.isRunning()) {
+            timeoutAguardandoOutroJogador.stop();
+        }
+        
+        int porta = Integer.parseInt(strPartes[1]);
+        if(porta == 0) {
+            cancelaConviteDeJogo(false);
+            return;
+        }
+
+        enviarUDP(enderecoIP, 6, "Ok");
+        try {
+            Socket socket = new Socket(enderecoIP, porta);
+            conexaoTCP = new CnxTCP(this, socket);
+            conexaoTCP.execute();
+            aguardandoInicioJogo = true;
+            statusJLabel.setText("Aguardando Início");
+        } catch(IOException ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao criar conexão " + ex.getMessage(),
+                    "Conectar com outro jogador", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+        
+    private void cancelaConviteDeJogo(boolean timeout) {
+        aguardandoRespostaConvite = false;
+        statusJLabel.setText("");//////////////////////////////////////////////////////////////////////////////////////****************************************
+        
+        String mensagem;
+        if(timeout) {
+            mensagem = "Timeout: " + nomeRemoto + " não respondeu.";
+        } else {
+            mensagem = nomeRemoto + " recusou o convite.";
+        JOptionPane.showMessageDialog(this, mensagem, "Convite para jogar",
+                                      JOptionPane.INFORMATION_MESSAGE);//////////////////////////////////////////////////////////////////////*******************
+        }
+    }
+    
+    public void jogadorConfirmouParticipacao(InetAddress addr) throws IOException {
+        if (addr.equals(addrJogadorRemoto) == false) {
+            return;
+	}
+        aguardandoConfirmacao = false;
+        iniciarSessaoJogo();
+    }
+    
+    private void finalizaJogo() {
+        enviarUDP(addrBroadcast, 3, meuNome, true);
+        Container frame = jButton12.getParent();
+        do {
+            frame = frame.getParent(); 
+        }while (!(frame instanceof JFrame));  
+        ((JFrame)frame).dispose();
+    }  
+    
+    public void atualizaListaOnLines() {
+        for(int i = 0; i < jogadores.size(); ++i) {
+            if(jogadores.get(i).isIsOnLine() == false) {
+                jogadores.remove(i);
+            }
+        }
+    }
 }

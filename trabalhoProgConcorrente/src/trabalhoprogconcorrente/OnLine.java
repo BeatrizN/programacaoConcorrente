@@ -38,5 +38,5 @@ public class OnLine {
     public void setIsOnLine(boolean isOnLine) {
         this.isOnLine = isOnLine;
     }
-  
+
 }
