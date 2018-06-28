@@ -4,7 +4,7 @@ import java.net.InetAddress;
 
 /**
  *
- * @author Alunoinf_2
+ * @author Beatriz Nogueira e Keslley Lima.
  */
 public class OnLine {
     private final String nome;

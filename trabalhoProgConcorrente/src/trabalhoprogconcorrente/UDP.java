@@ -7,6 +7,10 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.SocketException;
 
+/**
+ *
+ * @author Beatriz Nogueira e Keslley Lima.
+ */
 public class UDP extends SwingWorker<Void, String> {
     private TabuleiroJogo mainJogo;
     private String meuNnome;
@@ -69,10 +73,10 @@ public class UDP extends SwingWorker<Void, String> {
                         mainJogo.adicionaOnLinesLista(tipoMensagem, conteudoMensagem, pacote.getAddress());
                         break;    
                     case 3:
-                        //
+                        mainJogo.removeJogadorOnline(conteudoMensagem);
                         break;
                     case 4:
-                        //
+                        mainJogo.fuiConvidado(conteudoMensagem, pacote.getAddress());
                         break;   
                     case 5:
                         //

@@ -8,7 +8,7 @@ import javax.swing.SwingWorker;
 
 /**
  *
- * @author Alunoinf_2
+ * @author Beatriz Nogueira e Keslley Lima.
  */
 public class TCP extends SwingWorker<Boolean, String> {
     private final TabuleiroJogo mainJogo;

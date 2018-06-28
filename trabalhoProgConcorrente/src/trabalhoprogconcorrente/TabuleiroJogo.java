@@ -1,16 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package trabalhoprogconcorrente;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.net.UnknownHostException;
 import java.util.Random;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
@@ -19,7 +17,7 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author Alunoinf_2
+ * @author Beatriz Nogueira e Keslley Lima.
  */
 public class TabuleiroJogo extends javax.swing.JFrame {
 
@@ -89,7 +87,7 @@ public class TabuleiroJogo extends javax.swing.JFrame {
     private InetAddress addrLocal;             // endereço do jogador local
     private InetAddress addrBroadcast;         // endereço para broadcasting
     private InetAddress addrJogadorRemoto;     // endereço do jogador remoto
-    private String apelidoRemoto;              // apelido do jogador remoto
+    private String nomeRemoto;              // apelido do jogador remoto
     private Timer TempoJogadorOnline;         // temporizador para saber quem está online
     private Timer timeoutJogadorOnlineTimer;  // temporizador de timeout
     private Timer timeoutEsperandoJogadorRemoto;    // temporizador de timeout
@@ -106,6 +104,8 @@ public class TabuleiroJogo extends javax.swing.JFrame {
      */
     public TabuleiroJogo() {
         initComponents();
+        
+
     }
 
     public void iniciarSessaoJogo() throws IOException {
@@ -114,7 +114,7 @@ public class TabuleiroJogo extends javax.swing.JFrame {
             timeoutEsperandoJogadorRemoto.stop();
         }
 
-        jogadorRemotoJLabel.setText(apelidoRemoto + "/" + simboloRemoto);
+        jogadorRemotoJLabel.setText(nomeRemoto + "/" + simboloRemoto);
         jogadorRemotoJLabel.setEnabled(true);
 
         if (fuiConvidado) {
@@ -141,7 +141,7 @@ public class TabuleiroJogo extends javax.swing.JFrame {
 
         placarRemotoJLabel.setEnabled(true);
         placarLocalJLabel.setEnabled(true);
-
+        
     }
 
     public void zerarPlacar() {
@@ -149,7 +149,7 @@ public class TabuleiroJogo extends javax.swing.JFrame {
         String nomeRemoto;
 
         if (isJogandoEmUmaPartida == true) {
-            nomeRemoto = apelidoRemoto + "/" + simboloRemoto;
+            nomeRemoto = this.nomeRemoto + "/" + simboloRemoto;
             corTabuleiro = Color.BLACK;
         } else {
             nomeRemoto = "Remoto" + "/" + simboloRemoto;
@@ -483,12 +483,12 @@ public class TabuleiroJogo extends javax.swing.JFrame {
 
             mensagem += "\n\n Placar final:"
                     + "\n " + meuNome + ":" + local
-                    + "\n" + apelidoRemoto + ":" + remoto
+                    + "\n" + nomeRemoto + ":" + remoto
                     + "\n\n";
             if (local == remoto) {
                 mensagem += "Você ganhou essa sensão, SHOW!!";
             } else {
-                mensagem += apelidoRemoto + "Ganhou a sessão!";
+                mensagem += nomeRemoto + "Ganhou a sessão!";
             }
 
             mensagem += "\n\nPara jogar novamente é necessário convidar jogador"
@@ -712,6 +712,7 @@ public class TabuleiroJogo extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jButton10 = new javax.swing.JButton();
+        jComboBox1 = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -962,6 +963,13 @@ public class TabuleiroJogo extends javax.swing.JFrame {
             }
         });
 
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -974,17 +982,22 @@ public class TabuleiroJogo extends javax.swing.JFrame {
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
+                .addGap(16, 16, 16)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(painelMensagens, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton10)
-                        .addGap(18, 18, 18))
-                    .addComponent(painelMensagens, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton10)))
+                        .addGap(18, 18, 18))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -999,7 +1012,9 @@ public class TabuleiroJogo extends javax.swing.JFrame {
                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jButton10))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel5)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1051,6 +1066,10 @@ public class TabuleiroJogo extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton12ActionPerformed
 
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBox1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1099,6 +1118,7 @@ public class TabuleiroJogo extends javax.swing.JFrame {
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
+    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -1222,5 +1242,106 @@ public class TabuleiroJogo extends javax.swing.JFrame {
             }
         }
     }
+    
+    public void removeJogadorOnline(String nome) throws IOException {
+        if(isJogandoEmUmaPartida && (isNomeIgual(nome, nomeRemoto))) { //(nome.compareToIgnoreCase(apelidoRemoto) == 0))
+            finalizarConexaoViaTCP(JOGADOR_DESISTIU);
+        }
+        
+        for(int i = 0; i < jogadores.size(); ++i) {
+            if(isNomeIgual(nome, jogadores.get(i).getNome())) {
+                jogadores.remove(i);
+                return;
+            }
+        }
+    }
 
+    public void fuiConvidado(String nome, InetAddress enderecoIP) {
+        String mensagem;
+        if(isJogandoEmUmaPartida) {
+            exibirMensagens(mensagemINF, enderecoIP.getHostAddress(),
+                    "Convite recusado automaticamente");
+            mensagem = nome + "|0";
+            enviarUDP(enderecoIP, 5, mensagem);
+            
+            return;
+        }
+
+        fuiConvidado = true;
+        statusJLabel.setText("");
+        addrJogadorRemoto = null;
+        
+        mensagem = "O jogador " + nome + " está te convidando para um jogo\nAceita?";
+        int resp = JOptionPane.showConfirmDialog(this, mensagem, "Convite para jogar",
+                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        
+        if (resp == JOptionPane.NO_OPTION) {
+            mensagem = meuNome + "|0";
+            enviarUDP(enderecoIP, 5, mensagem);
+            exibirMensagens(mensagemINF, "", "Convite não foi aceito");
+            return;
+        }
+        
+        servidorTCP = socketTCPiniciando();
+        if (servidorTCP == null) {
+            JOptionPane.showMessageDialog(null,
+                    "Erro na criação da conexão TCP.",
+                    "Conexão do jogador remoto",
+                    JOptionPane.ERROR_MESSAGE);
+            mensagem = meuNome + "|0";
+            enviarUDP(enderecoIP, 5, mensagem);
+            statusJLabel.setText("");
+
+            return;
+        }
+        
+        addrJogadorRemoto = enderecoIP;
+        nomeRemoto = nome;
+        tcpEscutaThread = new TCP(this, servidorTCP, enderecoIP);
+        tcpEscutaThread.execute();
+            
+        mensagem = meuNome + "|" + servidorTCP.getLocalPort();
+        enviarUDP(enderecoIP, 5, mensagem);
+        
+        aguardandoConexao = true;
+        aguardandoConfirmacao = true;
+        aguardandoInicioJogo = true;
+        statusJLabel.setText("Aguardando Conexão");
+        //timeoutAguardandoJogadorRemoto.start();
+    }
+    
+    private ServerSocket socketTCPiniciando() {
+        InetAddress enderecoInterface = encontraInterface();
+        if(enderecoInterface == null) {
+            return null;
+        }
+        ServerSocket socket;
+        try {
+            socket = new ServerSocket(0, 1, enderecoInterface);
+            socket.setReuseAddress(true);
+        } catch (IOException e) {
+            return null;
+        }
+     
+        return socket;
+    }
+    
+    private InetAddress encontraInterface() {
+        int x = jComboBox1.getSelectedIndex();
+        if(x < 0) {
+            return null;
+        }
+        InetAddress endereco;
+        String auxiliar = jComboBox1.getItemAt(x);
+        String[] espacamento = auxiliar.split("  ");
+        
+        try {
+            endereco = InetAddress.getByName(espacamento[0]);
+        } catch (UnknownHostException ex) {
+            return null;
+        }
+        
+        return endereco;
+    }
+    
 }

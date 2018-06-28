@@ -2,7 +2,7 @@ package trabalhoprogconcorrente;
 
 /**
  *
- * @author Alunoinf_2
+ * @author Beatriz Nogueira e Keslley Lima.
  */
 public class TrabalhoProgConcorrente {
 
