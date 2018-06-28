@@ -674,23 +674,10 @@ public class TabuleiroJogo extends javax.swing.JFrame {
 
         statusJLabel.setText("");
 
-        exibirMensagem(mensagemINF, mensagemTCP, addrRemoto, portaJogadorRemoto,
-                "Conexão foi encerrada");
-        exibirMensagem(mensagemINF, mensagemSemProtocolo, "", 0, "O jogo acabou"
+        exibirMensagens(mensagemINF, addrRemoto, "Conexão foi encerrada");
+        exibirMensagens(mensagemINF, "", "O jogo acabou"
         );
     }
-
-    public void exibirMensagem(String mensagem, String protocolo, String endereco,
-             int porta, String conteudo) {
-        DefaultTableModel modelo = (DefaultTableModel) mensagensJTable.getModel();
-        modelo.addRow(new String[]{mensagem, protocolo, endereco,
-            (porta > 0 ? String.valueOf(porta) : ""),
-            conteudo});
-        
-        mensagensJTable.changeSelection(mensagensJTable.getRowCount() -1,0,
-                false, false);
-    }
-   
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -1156,7 +1143,7 @@ public class TabuleiroJogo extends javax.swing.JFrame {
         //Bia não esqueça desse comentario para apagar se não for usado!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //tabelaMensagens.changeSelection(tabelaMensagens.getRowCount() -1, 0, false, false);
     }
-
+    
     public void conectou(CnxTCP cnx) throws IOException {
         aguardandoConexao = false;
         this.conexaoTCP = cnx;

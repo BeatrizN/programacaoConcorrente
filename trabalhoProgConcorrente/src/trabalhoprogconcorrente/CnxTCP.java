@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package trabalhoprogconcorrente;
 
 import java.io.BufferedReader;
@@ -45,10 +40,8 @@ public class CnxTCP extends SwingWorker<Boolean, String> {
             this.outw = new OutputStreamWriter(this.saida, "ISO-8859-1");
             this.bfw = new BufferedWriter(this.outw);
         } catch (IOException e) {
-            mainTabuleiro.exibirMensagem(TabuleiroJogo.mensagemERRO,
-                    TabuleiroJogo.mensagemTCP,
-                    socket.getRemoteSocketAddress().toString(),
-                    socket.getPort(),
+            mainTabuleiro.exibirMensagens(TabuleiroJogo.mensagemERRO,
+                    socket.getRemoteSocketAddress().toString(), 
                     "Erro ao criar uma nova conexão");
         }
     }
@@ -64,24 +57,20 @@ public class CnxTCP extends SwingWorker<Boolean, String> {
             try {
                 mensagem = (String) bfr.readLine();
                 if (!"".equals(mensagem.trim())) {
-                    int tamanhoMensagem = Integer.parseInt(mensagem.substring(2,
-                            5));
+                    int tamanhoMensagem = Integer.parseInt(mensagem.substring(2,5));
                     
                     if (mensagem.length() != tamanhoMensagem) {
-                        mainTabuleiro.exibirMensagem(TabuleiroJogo.mensagemIN,
-                                TabuleiroJogo.mensagemTCP, socket.
-                                        getRemoteSocketAddress().toString(),
-                                socket.getPort(), "Erro no tamanho da mensagem"
-                                + mensagem);
+                        mainTabuleiro.exibirMensagens(TabuleiroJogo.mensagemIN,
+                                socket.getRemoteSocketAddress().toString(),
+                                "Erro no tamanho da mensagem" + mensagem);
                     }
+                    
                     int tamanhoMinimo = 5;
                     
                     if (mensagem.length() < tamanhoMinimo) {
-                        mainTabuleiro.exibirMensagem(TabuleiroJogo.mensagemIN,
-                                TabuleiroJogo.mensagemTCP, socket.
-                                        getRemoteSocketAddress().toString(),
-                                socket.getPort(), "Mensagem não é valida, devido"
-                                + " ao tamanho, que é: " + mensagem);;
+                        mainTabuleiro.exibirMensagens(TabuleiroJogo.mensagemIN,
+                                socket.getRemoteSocketAddress().toString(),
+                                "Mensagem não é valida, devido ao tamanho, que é: " + mensagem);;
                     }
                     
                     String complemento;
@@ -90,8 +79,7 @@ public class CnxTCP extends SwingWorker<Boolean, String> {
                         complemento = mensagem.substring(5);
                     }
                     
-                    int tamanhoTotalMsg = Integer.parseInt(mensagem.substring(0,
-                            2));
+                    int tamanhoTotalMsg = Integer.parseInt(mensagem.substring(0,2));
                     complemento = "";
                     int posicao = Integer.parseInt(complemento);
                     
@@ -117,15 +105,12 @@ public class CnxTCP extends SwingWorker<Boolean, String> {
                             break;
                         
                         default:
-                            mainTabuleiro.exibirMensagem(TabuleiroJogo.mensagemIN,
-                                    TabuleiroJogo.mensagemTCP, socket.
-                                            getRemoteSocketAddress().toString(),
-                                    socket.getPort(), "Mnsagem não é válida, o"
-                                    + "tamanho dela é: " + mensagem);
+                            mainTabuleiro.exibirMensagens(TabuleiroJogo.mensagemIN,
+                                    socket.getRemoteSocketAddress().toString(),
+                                    "Mnsagem não é válida, o tamanho dela é: " + mensagem);
                     }
                     
                 } else {
-                    
                     mainTabuleiro.finalizarConexaoViaTCP(TabuleiroJogo.CONEXAO_CAIU);
                     
                     Thread.currentThread().stop();
@@ -139,10 +124,8 @@ public class CnxTCP extends SwingWorker<Boolean, String> {
                     bfw.close();
                 }
             } catch (IOException ex) {
-                mainTabuleiro.exibirMensagem(TabuleiroJogo.mensagemIN,
-                        TabuleiroJogo.mensagemTCP, socket.
-                                getRemoteSocketAddress().toString(), socket.
-                                getPort(), ex.getMessage());
+                mainTabuleiro.exibirMensagens(TabuleiroJogo.mensagemIN, 
+                        socket.getRemoteSocketAddress().toString(), ex.getMessage());
                 return false;
             }
         }
@@ -161,17 +144,14 @@ public class CnxTCP extends SwingWorker<Boolean, String> {
             
             outw.write(mensagem);
             outw.flush();
+            mainTabuleiro.exibirMensagens(TabuleiroJogo.mensagemOUT, 
+                   socket.getRemoteSocketAddress().toString(), mensagem);
             
-           mainTabuleiro.exibirMensagem(TabuleiroJogo.mensagemOUT,TabuleiroJogo. 
-                   mensagemTCP, socket.getRemoteSocketAddress().toString(),
-                   socket.getPort(), mensagem);
-
             return true;
         } catch (IOException ex) {
-            mainTabuleiro.exibirMensagem(TabuleiroJogo.mensagemOUT,TabuleiroJogo.
-                    mensagemTCP, socket.getRemoteSocketAddress().toString(), 
-                    socket.getPort(), "Não foi possível enviar a mensagem:" +
-                            mensagem);
+            mainTabuleiro.exibirMensagens(TabuleiroJogo.mensagemOUT, 
+                    socket.getRemoteSocketAddress().toString(), 
+                    "Não foi possível enviar a mensagem:" + mensagem);
             return false;
         }
     }
