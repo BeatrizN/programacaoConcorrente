@@ -140,8 +140,8 @@ public class TabuleiroJogo extends javax.swing.JFrame {
         }
         
         jogadores = new DefaultListModel<>();
-        jogadoresJList.setModel(jogadores); ////////////////////////////////////////////************************
-        jogadoresJList.setCellRenderer(new Renderizacao()); ////////////////////////////////////////****************************
+        jList1.setModel(jogadores); ////////////////////////////////////////////************************
+        jList1.setCellRenderer(new Renderizacao()); ////////////////////////////////////////****************************
 
         try {
             Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
@@ -679,11 +679,11 @@ public class TabuleiroJogo extends javax.swing.JFrame {
                 conexaoTCP.enviarMensagemViaTCP(9, null);
 
                 minhaVez = inicieiUltimoJogo = true;
-                statusJLabel.setText("Sua vez de jogar");
+                statusJLabel.setText("Sua vez de jogar"); /////////////////////////////////////////////////////////////
             }
         } else {
             minhaVez = inicieiUltimoJogo = false;
-            statusJLabel.setText("Aguardando início da partida");
+            statusJLabel.setText("Aguardando início da partida"); ///////////////////////////////////////////////
             aguardandoInicioJogo = true;
         }
     }
@@ -803,6 +803,9 @@ public class TabuleiroJogo extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jButton10 = new javax.swing.JButton();
         jComboBox1 = new javax.swing.JComboBox<>();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jList1 = new javax.swing.JList<>();
+        jTextField1 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -823,6 +826,12 @@ public class TabuleiroJogo extends javax.swing.JFrame {
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
+            }
+        });
+
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
             }
         });
 
@@ -1060,6 +1069,15 @@ public class TabuleiroJogo extends javax.swing.JFrame {
             }
         });
 
+        jList1.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane3.setViewportView(jList1);
+
+        jTextField1.setText("jTextField1");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -1085,9 +1103,15 @@ public class TabuleiroJogo extends javax.swing.JFrame {
                                 .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jTextField1)
+                                .addGap(18, 18, 18)
                                 .addComponent(jButton10)))
                         .addGap(18, 18, 18))))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(287, 287, 287)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1100,7 +1124,8 @@ public class TabuleiroJogo extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton10))
+                            .addComponent(jButton10)
+                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel5)
@@ -1110,7 +1135,9 @@ public class TabuleiroJogo extends javax.swing.JFrame {
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(painelMensagens, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(81, 81, 81))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(110, 110, 110))
         );
 
         pack();
@@ -1159,6 +1186,10 @@ public class TabuleiroJogo extends javax.swing.JFrame {
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBox1ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton6ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1214,14 +1245,24 @@ public class TabuleiroJogo extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JList<String> jList1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JPanel painelMensagens;
     private javax.swing.JTable tabelaMensagens;
     // End of variables declaration//GEN-END:variables
+  
+    
+
+    
+    
+    /*
+    
     private javax.swing.JLabel statusJLabel;
     private javax.swing.JLabel jogadorRemotoJLabel;
     private javax.swing.JLabel placarLocalJLabel;
@@ -1242,7 +1283,7 @@ public class TabuleiroJogo extends javax.swing.JFrame {
     private javax.swing.JLabel jogo3JLabel;
     private javax.swing.JLabel jogo4JLabel;
     private javax.swing.JLabel jogo5JLabel;
-
+*/
     public void exibirMensagens(String tipo, String endereco, String conteudo) {
 
         DefaultTableModel msg;
@@ -1251,7 +1292,7 @@ public class TabuleiroJogo extends javax.swing.JFrame {
         msg.addRow(new String[]{tipo, endereco, conteudo});
 
         //Bia não esqueça desse comentario para apagar se não for usado!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        //tabelaMensagens.changeSelection(tabelaMensagens.getRowCount() -1, 0, false, false);
+        tabelaMensagens.changeSelection(tabelaMensagens.getRowCount() -1, 0, false, false);
     }
     
     public void conectou(CnxTCP cnx) throws IOException {
@@ -1358,7 +1399,7 @@ public class TabuleiroJogo extends javax.swing.JFrame {
         }
 
         fuiConvidado = true;
-        statusJLabel.setText("");
+        statusJLabel.setText(""); ///////////////////////////////////////////////////////////////////////////////////////////////////
         addrJogadorRemoto = null;
         
         mensagem = "O jogador " + nome + " está te convidando para um jogo\nAceita?";
@@ -1380,7 +1421,7 @@ public class TabuleiroJogo extends javax.swing.JFrame {
                     JOptionPane.ERROR_MESSAGE);
             mensagem = meuNome + "|0";
             enviarUDP(enderecoIP, 5, mensagem);
-            statusJLabel.setText("");
+            statusJLabel.setText(""); ////////////////////////////////////////////////////////////////////////////////////////
 
             return;
         }
@@ -1396,7 +1437,7 @@ public class TabuleiroJogo extends javax.swing.JFrame {
         aguardandoConexao = true;
         aguardandoConfirmacao = true;
         aguardandoInicioJogo = true;
-        statusJLabel.setText("Aguardando Conexão");
+        statusJLabel.setText("Aguardando Conexão"); //////////////////////////////////////////////////////////////////////////////////////
         timeoutAguardandoOutroJogador.start();
     }
     
@@ -1468,7 +1509,7 @@ public class TabuleiroJogo extends javax.swing.JFrame {
             conexaoTCP = new CnxTCP(this, socket);
             conexaoTCP.execute();
             aguardandoInicioJogo = true;
-            statusJLabel.setText("Aguardando Início");
+            statusJLabel.setText("Aguardando Início"); ///////////////////////////////////////////////////////////////////////////////////////
         } catch(IOException ex) {
             JOptionPane.showMessageDialog(this, "Erro ao criar conexão " + ex.getMessage(),
                     "Conectar com outro jogador", JOptionPane.INFORMATION_MESSAGE);
