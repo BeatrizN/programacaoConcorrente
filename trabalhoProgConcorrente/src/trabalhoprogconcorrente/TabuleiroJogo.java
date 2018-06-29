@@ -1118,8 +1118,6 @@ public class TabuleiroJogo extends javax.swing.JFrame {
         });
         jScrollPane3.setViewportView(jList1);
 
-        jTextField1.setText("jTextField1");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -1244,7 +1242,64 @@ public class TabuleiroJogo extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-        // TODO add your handling code here:
+        if (isConectado) {
+            meDesconectaPartida();
+            return;
+        }
+
+        meuNome = jTextField1.getText().trim();
+        if (meuNome.isEmpty()) {
+            jTextField1.requestFocus();
+            return;
+        }
+
+        int nInterface = jComboBox1.getSelectedIndex();
+        if (nInterface < 0) {
+            jComboBox1.requestFocus();
+            return;
+        }
+
+        addrLocal = encontraInterface();
+        if (addrLocal == null) {
+            JOptionPane.showMessageDialog(null,
+                    "Erro na opção escolhida.",
+                    "Erro na conexão",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            udpEscutaThread = new UDP(this, meuNome, portaUDP,
+                    addrLocal);
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null,
+                    "Erro na criação do thread de leitura da porta " + PORTA_UDP
+                    + ".\n" + ex.getMessage(),
+                    "Conexão do jogador local",
+                    JOptionPane.ERROR_MESSAGE);
+            finalizaJogo();
+            return;
+        }
+
+        isConectado = true;
+
+        // habilita/desabilita controles
+        apelidoLocalJText.setEnabled(false);
+        interfacesJComboBox.setEnabled(false);
+        conectarJButton.setText("Desconectar");
+        jogadorLocalJLabel.setEnabled(true);
+
+        // mostra apelido do jogador local no tabuleiro
+        jogadorLocalJLabel.setText(POSICAO_LOCAL + " - " + apelidoLocal);
+
+        // executa thread de leitura da porta UDP
+        udpEscutaThread.execute();
+
+        enviarMensagemUDP(addrBroadcast, 1, apelidoLocal);
+
+        if (quemEstaOnlineTimer.isRunning() == false) {
+            quemEstaOnlineTimer.start();
+        }
     }//GEN-LAST:event_jButton10ActionPerformed
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
@@ -1628,5 +1683,50 @@ public class TabuleiroJogo extends javax.swing.JFrame {
                 jogadores.remove(i);
             }
         }
+    }
+
+    private void meDesconectaPartida() {
+        isConectado = false;
+
+        // encerra temporizador de atualização da lista de jogadores online
+        if (quemEstaOnlineTimer.isRunning()) {
+            quemEstaOnlineTimer.stop();
+        }
+        if (timeoutQuemEstaOnlineTimer.isRunning()) {
+            timeoutQuemEstaOnlineTimer.stop();
+        }
+        if (timeoutAguardandoJogadorRemoto.isRunning()) {
+            timeoutAguardandoJogadorRemoto.stop();
+        }
+
+        // limpa lista de jogadores online
+        jogadores.clear();
+
+        // envia mensagem informando que jogador local ficou offline
+        enviarMensagemUDP(addrBroadcast, 3, apelidoLocal);
+
+        // habilita/desabilita controles
+        apelidoLocalJText.setEnabled(true);
+        interfacesJComboBox.setEnabled(true);
+        conectarJButton.setText("Conectar");
+        jogadorLocalJLabel.setEnabled(false);
+
+        // apaga apelido do jogador local no tabuleiro
+        jogadorLocalJLabel.setText(POSICAO_LOCAL + " - Local");
+
+        // encerra thread de leitura da porta UDP
+        if (udpEscutaThread != null) {
+            udpEscutaThread.encerraConexao();
+            udpEscutaThread.cancel(true);
+        }
+
+        // encerra thread de leitura da porta TCP
+        if (tcpEscutaThread != null) {
+            tcpEscutaThread.encerraConexao();
+            tcpEscutaThread.cancel(true);
+        }
+
+        statusJLabel.setText("");
+        apelidoLocalJText.requestFocus();
     }
 }
