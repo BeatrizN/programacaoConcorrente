@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
 * Copyright (c) 2018 Willians Santos
 * Copyright (c) 2018 Keslley Lima, Beatriz Nogueira
@@ -9,6 +10,8 @@
 * Vale ressaltar que  o código fonte desse trabalho também está presente em um
 * repositório público no seguinte caminho https://github.com/BeatrizN/programacaoConcorrente
 */
+=======
+>>>>>>> 77e29659d60beeb991baff85183856ebdfc99b11
 package trabalhoprogconcorrente;
 
 import java.net.InetAddress;
