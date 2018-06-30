@@ -262,31 +262,31 @@ public class TabuleiroJogo extends javax.swing.JFrame {
 
                 switch (posicao) {
                     case 0:
-                        jButton1.setText("");
+                        jLabel11.setText("");
                         break;
                     case 1:
-                        jButton2.setText("");
+                        jLabel12.setText("");
                         break;
                     case 2:
-                        jButton3.setText("");
+                        jLabel13.setText("");
                         break;
                     case 3:
-                        jButton4.setText("");
+                        jLabel14.setText("");
                         break;
                     case 4:
-                        jButton5.setText("");
+                        jLabel15.setText("");
                         break;
                     case 5:
-                        jButton6.setText("");
+                        jLabel16.setText("");
                         break;
                     case 6:
-                        jButton7.setText("");
+                        jLabel17.setText("");
                         break;
                     case 7:
-                        jButton8.setText("");
+                        jLabel18.setText("");
                         break;
                     case 8:
-                        jButton9.setText("");
+                        jLabel19.setText("");
                         break;
                 }
                 posicao = posicao + 1;
@@ -365,31 +365,31 @@ public class TabuleiroJogo extends javax.swing.JFrame {
 
                 switch (posicao) {
                     case 0:
-                        jButton1.setText("");
+                        jLabel11.setText("");
                         break;
                     case 1:
-                        jButton2.setText("");
+                        jLabel12.setText("");
                         break;
                     case 2:
-                        jButton3.setText("");
+                        jLabel13.setText("");
                         break;
                     case 3:
-                        jButton4.setText("");
+                        jLabel14.setText("");
                         break;
                     case 4:
-                        jButton5.setText("");
+                        jLabel15.setText("");
                         break;
                     case 5:
-                        jButton6.setText("");
+                        jLabel16.setText("");
                         break;
                     case 6:
-                        jButton7.setText("");
+                        jLabel17.setText("");
                         break;
                     case 7:
-                        jButton8.setText("");
+                        jLabel18.setText("");
                         break;
                     case 8:
-                        jButton9.setText("");
+                        jLabel19.setText("");
                         break;
                 }
                 posicao = posicao + 1;
@@ -430,35 +430,35 @@ public class TabuleiroJogo extends javax.swing.JFrame {
         }
 
         jogoVelha[linha][coluna] = marca;
-        javax.swing.JButton botao = null;
+        javax.swing.JLabel botao = null;
 
         switch (posicao) {
             case 1:
-                botao = jButton1;
+                botao = jLabel11;
                 break;
             case 2:
-                botao = jButton2;
+                botao = jLabel12;
                 break;
             case 3:
-                botao = jButton3;
+                botao = jLabel13;
                 break;
             case 4:
-                botao = jButton4;
+                botao = jLabel14;
                 break;
             case 5:
-                botao = jButton5;
+                botao = jLabel15;
                 break;
             case 6:
-                botao = jButton6;
+                botao = jLabel16;
                 break;
             case 7:
-                botao = jButton7;
+                botao = jLabel17;
                 break;
             case 8:
-                botao = jButton8;
+                botao = jLabel18;
                 break;
             case 9:
-                botao = jButton9;
+                botao = jLabel19;
                 break;
         }
 
@@ -624,37 +624,37 @@ public class TabuleiroJogo extends javax.swing.JFrame {
         }
 
         int linha, coluna;
-        javax.swing.JButton botao = null;
+        javax.swing.JLabel1 botao = null;
         for (int pos = 0; pos < 9; ++pos) {
             linha = pos / 3;
             coluna = pos % 3;
             switch (pos) {
                 case 0:
-                    botao = jButton1;
+                    botao = jLabel11;
                     break;
                 case 1:
-                    botao = jButton2;
+                    botao = jLabel12;
                     break;
                 case 2:
-                    botao = jButton3;
+                    botao = jLabel13;
                     break;
                 case 3:
-                    botao = jButton4;
+                    botao = jLabel14;
                     break;
                 case 4:
-                    botao = jButton5;
+                    botao = jLabel15;
                     break;
                 case 5:
-                    botao = jButton6;
+                    botao = jLabel16;
                     break;
                 case 6:
-                    botao = jButton7;
+                    botao = jLabel17;
                     break;
                 case 7:
-                    botao = jButton8;
+                    botao = jLabel18;
                     break;
                 case 8:
-                    botao = jButton9;
+                    botao = jLabel19;
                     break;
             }
 
@@ -1525,7 +1525,6 @@ public class TabuleiroJogo extends javax.swing.JFrame {
 
         msg.addRow(new String[]{tipo, endereco, conteudo});
 
-        //Bia não esqueça desse comentario para apagar se não for usado!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         tabelaMensagens.changeSelection(tabelaMensagens.getRowCount() - 1, 0, false, false);
     }
 
