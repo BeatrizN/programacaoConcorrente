@@ -1,3 +1,14 @@
+/*
+* Copyright (c) 2018 Willians Santos
+* Copyright (c) 2018 Keslley Lima, Beatriz Nogueira
+* MIT license.
+* Esse trabalho foi desenvolvido no contexto da disciplina de Desenvolvimento de
+* Software concorrente pelos alunos Beatriz Nogueira e Keslley Lima, no qual foi
+* utilizado como principal referência o repositório público "JogoVelhaSocket" do
+* usuário "tiowillians" presente no GitHub em https://github.com/tiowillians/JogoVelhaSocket
+* Vale ressaltar que  o código fonte desse trabalho também está presente em um
+* repositório público no seguinte caminho https://github.com/BeatrizN/programacaoConcorrente
+*/
 package trabalhoprogconcorrente;
 
 import java.net.DatagramSocket;
@@ -7,6 +18,10 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.SocketException;
 
+/**
+ *
+ * @author Beatriz Nogueira e Keslley Lima.
+ */
 public class UDP extends SwingWorker<Void, String> {
     private TabuleiroJogo mainJogo;
     private String meuNnome;
@@ -69,16 +84,16 @@ public class UDP extends SwingWorker<Void, String> {
                         mainJogo.adicionaOnLinesLista(tipoMensagem, conteudoMensagem, pacote.getAddress());
                         break;    
                     case 3:
-                        //
+                        mainJogo.removeJogadorOnline(conteudoMensagem);
                         break;
                     case 4:
-                        //
+                        mainJogo.fuiConvidado(conteudoMensagem, pacote.getAddress());
                         break;   
                     case 5:
-                        //
+                        mainJogo.responderJogador(conteudoMensagem, pacote.getAddress());
                         break;
                     case 6:
-                        //
+                        mainJogo.jogadorConfirmouParticipacao(pacote.getAddress());
                         break;   
                     default:
                         mainJogo.exibirMensagens(mainJogo.mensagemIN, pacote.getAddress().
